@@ -1,0 +1,363 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Böden der Mesa Redonda – Villaverde del Río</title>
+  <meta name="description" content="Bodendaten von 33 Profilen um die Mesa Redonda (Villaverde del Río, Sevilla): Karte, Tabelle, Graphen, Deutsch/Englisch.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='4' fill='%239a4a23'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="css/style.css">
+  <script>
+    // Farbthema vor dem ersten Zeichnen setzen; gemeinsam mit der 3D-Startseite (gleicher Server, gleicher Speicher)
+    (function () {
+      let t = null;
+      try { t = localStorage.getItem("villaverde.thema"); } catch (e) { /* ohne Speicher weiter */ }
+      if (t !== "hell" && t !== "dunkel") t = matchMedia("(prefers-color-scheme: dark)").matches ? "dunkel" : "hell";
+      document.documentElement.dataset.thema = t;
+    })();
+  </script>
+  <!-- Bibliotheken mit fester Version (geprüft am 29.10.2026) -->
+  <script defer src="https://cdn.jsdelivr.net/npm/papaparse@5.7.0/papaparse.min.js"
+          integrity="sha384-Cac1u6+UwTX6dLDygwZYoxzTmqBikf22tn1qbNy+EVRSvn+FIh9oC/VRmAaL4Ih9" crossorigin="anonymous"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/plotly.js-dist-min@4.1.2/plotly.min.js"
+          integrity="sha384-hHv6D3tTUUBpp4tVv6t2Dc3oGuRhphmWOTKUR8jWyN0Pnon1g3iebKCNDNmKmxo8" crossorigin="anonymous"></script>
+  <script defer src="js/i18n.js"></script>
+  <script defer src="js/texte_hintergrund.js"></script>
+  <script defer src="js/daten.js"></script>
+  <script defer src="js/tabelle.js"></script>
+  <script defer src="js/graphen.js"></script>
+  <script defer src="js/karte.js"></script>
+  <script defer src="js/tour.js"></script>
+  <script defer src="js/auswahl.js"></script>
+  <script defer src="js/uebersicht.js"></script>
+  <script defer src="js/app.js"></script>
+</head>
+<body>
+  <header class="kopf">
+    <div class="kopf-innen">
+      <!-- Menü mit drei Strichen wie auf der 3D-Seite, zusätzlich zur Leiste -->
+      <div class="menue-ort">
+        <button type="button" id="menue-knopf" aria-expanded="false" aria-controls="menue" data-i18n-aria="menue.label" aria-label="Menü öffnen"><span></span><span></span><span></span></button>
+        <nav id="menue" data-i18n-aria="nav.label" aria-label="Ansichten" hidden>
+          <a href="../startseite_3d/index.html#gelaende" data-i18n="nav.gelaende">3D-Gelände</a>
+          <a href="#start" data-ansicht="start" data-i18n="nav.start">Übersicht</a>
+          <a href="#hintergrund" data-ansicht="hintergrund" data-i18n="nav.hintergrund">Hintergrund</a>
+          <a href="#karte" data-ansicht="karte" data-i18n="nav.karte">Karte</a>
+          <a href="#tabelle" data-ansicht="tabelle" data-i18n="nav.tabelle">Tabelle</a>
+          <a href="#graphen" data-ansicht="graphen" data-i18n="nav.graphen">Graphen</a>
+          <a href="#info" data-ansicht="info" data-i18n="nav.info">Methoden und Quellen</a>
+        </nav>
+      </div>
+      <a class="marke" href="#start" data-i18n="marke">Mesa Redonda</a>
+      <nav class="nav" data-i18n-aria="nav.label" aria-label="Ansichten">
+        <a href="../startseite_3d/index.html#gelaende" class="nav-3d" data-i18n="nav.gelaende">3D-Gelände</a>
+        <a href="#start" data-ansicht="start" data-i18n="nav.start">Übersicht</a>
+        <a href="#hintergrund" data-ansicht="hintergrund" data-i18n="nav.hintergrund">Hintergrund</a>
+        <a href="#karte" data-ansicht="karte" data-i18n="nav.karte">Karte</a>
+        <a href="#tabelle" data-ansicht="tabelle" data-i18n="nav.tabelle">Tabelle</a>
+        <a href="#graphen" data-ansicht="graphen" data-i18n="nav.graphen">Graphen</a>
+        <a href="#info" data-ansicht="info" data-i18n="nav.info">Methoden und Quellen</a>
+      </nav>
+      <div class="kopf-schalter">
+        <button type="button" id="thema" class="thema-knopf" aria-pressed="false" data-i18n-aria="thema" aria-label="Dunkler Modus">
+          <svg class="mond" viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 10.2A5.8 5.8 0 0 1 5.8 2.5a5.8 5.8 0 1 0 7.7 7.7Z"/></svg>
+          <svg class="sonne" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="3"/><path d="M8 1v1.6M8 13.4V15M1 8h1.6M13.4 8H15M3 3l1.1 1.1M11.9 11.9 13 13M3 13l1.1-1.1M11.9 4.1 13 3"/></svg>
+        </button>
+        <div class="segment" role="group" data-i18n-aria="sprache" aria-label="Sprache">
+          <button type="button" data-sprache="de" aria-pressed="true" lang="de">DE</button>
+          <button type="button" data-sprache="en" aria-pressed="false" lang="en">EN</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main id="inhalt">
+    <!-- Laden und Ersatzweg über Datei-Wähler -->
+    <div id="laden" class="laden-hinweis">
+      <p class="klein" data-i18n="laden.lade">Daten werden geladen …</p>
+    </div>
+    <div id="ladefehler" class="laden-hinweis karte" hidden>
+      <h2 data-i18n="laden.titel">Daten konnten nicht geladen werden</h2>
+      <p data-i18n="laden.text"></p>
+      <pre id="startbefehl"></pre>
+      <p data-i18n="laden.oder"></p>
+      <label class="knopf knopf-voll datei-waehler">
+        <input type="file" id="datei" accept=".csv,.tsv,text/csv,text/tab-separated-values" multiple>
+        <span data-i18n="laden.knopf">Dateien wählen</span>
+      </label>
+      <p id="dateifehler" class="klein" role="alert"></p>
+    </div>
+
+    <!-- Übersicht -->
+    <section class="ansicht" id="ansicht-start" data-ansicht="start" hidden>
+      <div class="start-buehne">
+        <div class="start-karte">
+          <p class="eyebrow" data-i18n="start.eyebrow"></p>
+          <h1 data-i18n="start.titel"></h1>
+          <p class="start-lead" id="start-lead"></p>
+          <div class="start-wege">
+            <a class="start-weg voll" href="../startseite_3d/index.html#gelaende"><span data-i18n="start.cta3d"></span> <span aria-hidden="true">›</span></a>
+            <a class="start-weg" href="#karte" data-i18n="start.ctakarte"></a>
+          </div>
+        </div>
+      </div>
+      <div class="kacheln" id="kacheln"></div>
+      <p class="kartenfuss"><span class="kartenfuss-dgm"></span> · <a href="https://www.openstreetmap.org/copyright" rel="noopener">© OpenStreetMap</a></p>
+
+      <h2 data-i18n="start.weiter"></h2>
+      <p class="start-unter" data-i18n="start.weiter.text"></p>
+      <div class="wege">
+        <section class="wege-gruppe">
+          <h3 data-i18n="gruppe.verstehen"></h3>
+            <a class="weg" href="../startseite_3d/index.html#gelaende">
+              <span class="vorschau vorschau-gelaende" aria-hidden="true"></span>
+              <span class="weg-name" data-i18n="nav.gelaende"></span>
+              <h4 data-i18n="frage.gelaende"></h4>
+              <p data-i18n="grund.gelaende"></p>
+            </a>
+            <a class="weg" href="#hintergrund">
+              <span class="vorschau vorschau-tour" id="vorschau-tour" aria-hidden="true"></span>
+              <span class="weg-name" data-i18n="nav.hintergrund"></span>
+              <h4 data-i18n="frage.hintergrund"></h4>
+              <p data-i18n="grund.hintergrund"></p>
+            </a>
+        </section>
+        <section class="wege-gruppe">
+          <h3 data-i18n="gruppe.erkunden"></h3>
+            <a class="weg" href="#karte">
+              <span class="vorschau vorschau-karte" id="vorschau-karte" aria-hidden="true"></span>
+              <span class="weg-name" data-i18n="nav.karte"></span>
+              <h4 data-i18n="frage.karte"></h4>
+              <p data-i18n="grund.karte"></p>
+            </a>
+            <a class="weg" href="#graphen">
+              <span class="vorschau vorschau-graph" id="vorschau-graph" aria-hidden="true"></span>
+              <span class="weg-name" data-i18n="nav.graphen"></span>
+              <h4 data-i18n="frage.graphen"></h4>
+              <p data-i18n="grund.graphen"></p>
+            </a>
+        </section>
+        <section class="wege-gruppe">
+          <h3 data-i18n="gruppe.nachschlagen"></h3>
+            <a class="weg" href="#tabelle">
+              <span class="vorschau vorschau-tabelle" id="vorschau-tabelle" aria-hidden="true"></span>
+              <span class="weg-name" data-i18n="nav.tabelle"></span>
+              <h4 data-i18n="frage.tabelle"></h4>
+              <p data-i18n="grund.tabelle"></p>
+            </a>
+            <a class="weg" href="#info">
+              <span class="vorschau vorschau-marken" id="vorschau-marken" aria-hidden="true"></span>
+              <span class="weg-name" data-i18n="nav.info"></span>
+              <h4 data-i18n="frage.info"></h4>
+              <p data-i18n="grund.info"></p>
+            </a>
+        </section>
+      </div>
+
+      <details class="start-echt">
+        <summary><span class="notiz-zeichen" aria-hidden="true">i</span><span data-i18n="echt.titel"></span></summary>
+        <p data-i18n="echt.text"></p>
+        <div id="start-marken"></div>
+      </details>
+    </section>
+
+    <!-- Hintergrund und Methodik -->
+    <section class="ansicht" id="ansicht-hintergrund" data-ansicht="hintergrund" hidden>
+      <div class="tour">
+        <div class="tour-buehne" id="tour-buehne">
+          <img id="tour-bild" alt="" src="bilder/station_1.webp">
+        </div>
+        <article class="tour-karte" id="tour-karte" aria-live="polite"></article>
+        <div class="tour-unten">
+          <nav class="tour-stationen" id="tour-stationen" data-i18n-aria="nav.hintergrund"></nav>
+          <div class="tour-zeit" id="tour-zeit"></div>
+        </div>
+        <!-- Die IGN-Nennung muss sichtbar am Kartenfuß stehen (quellen_lizenzen.md, D3); der Rest klappt auf -->
+        <div class="tour-nennung">
+          <span class="kartenfuss-dgm"></span><span>·</span><a href="https://www.openstreetmap.org/copyright" rel="noopener">© OpenStreetMap</a><span>·</span>
+          <details class="tour-quellen">
+            <summary data-i18n="tour.quellen"></summary>
+            <div><p data-i18n-html="tour.fuss"></p><a href="#info" data-i18n="tour.6.link"></a></div>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- Karte und Profil-Steckbrief -->
+    <section class="ansicht" id="ansicht-karte" data-ansicht="karte" hidden>
+      <h1 data-i18n="karte.titel"></h1>
+      <p class="lead" data-i18n="karte.lead"></p>
+      <div class="filterleiste" role="toolbar" aria-label="Filter">
+        <div class="segment" role="group" data-i18n-aria="quelle.label">
+          <button type="button" data-setze="quelle" data-wert="modell" data-i18n="quelle.modell"></button>
+          <button type="button" data-setze="quelle" data-wert="labor" data-i18n="quelle.labor"></button>
+        </div>
+        <label class="feld"><span data-i18n="leiste.messgroesse"></span><select class="wahl-messgroesse" data-zustand="messgroesse"></select></label>
+        <label class="feld"><span data-i18n="filter.tiefe"></span><select id="wahl-karte-tiefe" data-zustand="karteTiefe"></select></label>
+      </div>
+      <section class="karte-einheit" data-i18n-aria="karte.titel">
+        <div class="graph graph-karte" id="graph-karte"></div>
+        <div class="karte-hinweis">
+          <p class="klein" data-i18n="karte.hinweis"></p>
+          <p class="kartenfuss kartenfuss-dgm"></p>
+        </div>
+        <article id="steckbrief" tabindex="-1"></article>
+      </section>
+    </section>
+
+    <!-- Tabelle -->
+    <section class="ansicht" id="ansicht-tabelle" data-ansicht="tabelle" hidden>
+      <h1 data-i18n="tabelle.titel"></h1>
+      <p class="lead" data-i18n="tabelle.lead"></p>
+      <div class="filterleiste doppelt" role="toolbar" aria-label="Filter">
+        <div class="leiste-zeile">
+          <div class="segment" role="group" data-i18n-aria="quelle.label">
+            <button type="button" data-setze="quelle" data-wert="modell" data-i18n="quelle.modell"></button>
+            <button type="button" data-setze="quelle" data-wert="labor" data-i18n="quelle.labor"></button>
+          </div>
+          <div class="filter-ort"></div>
+          <label class="feld feld-suche">
+            <span class="nur-sr" data-i18n="suche.label"></span>
+            <input type="search" class="suche" data-i18n-platzhalter="suche.platzhalter" autocomplete="off">
+          </label>
+          <div class="auswahl-ort"></div>
+          <label class="kipper"><input type="checkbox" id="tab-leiste"><span data-i18n="tab.leiste"></span></label>
+          <span class="zaehler" id="tabelle-zaehler" aria-live="polite"></span>
+          <button type="button" class="knopf" id="download" data-i18n-title="knopf.download">CSV</button>
+        </div>
+        <div class="leiste-zeile leiste-zweit">
+          <span class="leiste-name" data-i18n="tab.zellen"></span>
+          <div class="segment" role="group" data-i18n-aria="tab.zellen">
+            <button type="button" data-tab-zellen="zahl" data-i18n="tab.zahl"></button>
+            <button type="button" data-tab-zellen="balken" data-i18n="tab.balken"></button>
+          </div>
+          <span class="leiste-name" data-i18n="tab.spalten"></span>
+          <div class="chips">
+            <button type="button" class="chip" data-tab-gruppe="lage" data-i18n="tab.lage"></button>
+            <button type="button" class="chip" data-tab-gruppe="chemie" data-i18n="tab.chemie"></button>
+            <button type="button" class="chip" data-tab-gruppe="koernung" data-i18n="panel.koernung"></button>
+            <button type="button" class="chip" data-tab-gruppe="abgel" data-i18n="tab.abgeleitet"></button>
+          </div>
+          <span class="leiste-name" data-i18n="tab.zeilen"></span>
+          <div class="segment" role="group" data-i18n-aria="tab.zeilen">
+            <button type="button" data-tab-dicht="1" data-i18n="tab.kompakt"></button>
+            <button type="button" data-tab-dicht="0" data-i18n="tab.normal"></button>
+          </div>
+          <button type="button" class="link-knopf zuruecksetzen" data-i18n="filter.zuruecksetzen"></button>
+        </div>
+      </div>
+      <div class="tabelle-quelle" id="tabelle-quelle"></div>
+      <div class="tabelle-layout">
+        <aside class="groessen-leiste" id="tabelle-leiste" data-i18n-aria="tab.groessen"></aside>
+        <div class="tabellen-rahmen" id="tabelle" tabindex="0"></div>
+      </div>
+      <div class="legende">
+        <span><span class="muster muster-auffaellig"></span><span class="marke-auffaellig" aria-hidden="true">!</span><span data-i18n="legende.auffaellig"></span></span>
+        <span><span class="muster muster-fehlt"></span><span data-i18n="legende.nicht"></span></span>
+        <span id="tabelle-marken"></span>
+      </div>
+      <p class="kartenfuss kartenfuss-dgm"></p>
+    </section>
+
+    <!-- Graphen -->
+    <section class="ansicht" id="ansicht-graphen" data-ansicht="graphen" hidden>
+      <h1 data-i18n="graphen.titel"></h1>
+      <p class="lead" data-i18n="graphen.lead"></p>
+      <div class="graphen-layout">
+        <aside class="leiste filterleiste">
+          <div class="segment" role="group" data-i18n-aria="quelle.label">
+            <button type="button" data-setze="quelle" data-wert="modell" data-i18n="quelle.modell"></button>
+            <button type="button" data-setze="quelle" data-wert="labor" data-i18n="quelle.labor"></button>
+          </div>
+          <label class="feld"><span data-i18n="leiste.messgroesse"></span><select class="wahl-messgroesse" data-zustand="messgroesse"></select></label>
+          <p class="klein ganz" id="graphen-art"></p>
+          <div class="filter-ort"></div>
+          <label class="feld feld-suche"><span class="nur-sr" data-i18n="suche.label"></span><input type="search" class="suche" data-i18n-platzhalter="suche.platzhalter" autocomplete="off"></label>
+          <div class="auswahl-ort"></div>
+          <button type="button" class="link-knopf zuruecksetzen" data-i18n="filter.zuruecksetzen"></button>
+          <p class="zaehler ganz" id="graphen-zaehler" aria-live="polite"></p>
+        </aside>
+
+        <div class="graphen-inhalt">
+          <div class="tabs" role="tablist" data-i18n-aria="graphen.titel" id="graph-tabs">
+            <button type="button" role="tab" id="tab-verteilung" aria-controls="panel-verteilung" data-setze="tab" data-wert="verteilung" data-i18n="panel.verteilung"></button>
+            <button type="button" role="tab" id="tab-tiefe" aria-controls="panel-tiefe" data-setze="tab" data-wert="tiefe" data-i18n="panel.tiefe"></button>
+            <button type="button" role="tab" id="tab-hoehe" aria-controls="panel-hoehe" data-setze="tab" data-wert="hoehe" data-i18n="panel.hoehe"></button>
+            <button type="button" role="tab" id="tab-zwei" aria-controls="panel-zwei" data-setze="tab" data-wert="zwei" data-i18n="panel.zwei"></button>
+            <button type="button" role="tab" id="tab-koernung" aria-controls="panel-koernung" data-setze="tab" data-wert="koernung" data-i18n="panel.koernung"></button>
+            <button type="button" role="tab" id="tab-korr" aria-controls="panel-korr" data-setze="tab" data-wert="korr" data-i18n="panel.korr"></button>
+          </div>
+        <div class="panels" id="panels">
+          <article class="panel" role="tabpanel" id="panel-verteilung" data-tab="verteilung" aria-labelledby="tab-verteilung" hidden>
+            <div class="panel-kopf"><div><h3 data-i18n="panel.verteilung"></h3><p data-i18n="panel.verteilung.text"></p></div></div>
+            <div class="panel-zeile">
+              <div class="graph" id="graph-hist"></div>
+              <div class="graph" id="graph-box"></div>
+            </div>
+          </article>
+
+          <article class="panel" role="tabpanel" id="panel-tiefe" data-tab="tiefe" aria-labelledby="tab-tiefe" hidden>
+            <div class="panel-kopf"><div><h3 data-i18n="panel.tiefe"></h3><p data-i18n="panel.tiefe.text"></p></div></div>
+            <div class="graph" id="graph-tiefe"></div>
+          </article>
+
+          <article class="panel" role="tabpanel" id="panel-hoehe" data-tab="hoehe" aria-labelledby="tab-hoehe" hidden>
+            <div class="panel-kopf"><div><h3 data-i18n="panel.hoehe"></h3><p data-i18n="panel.hoehe.text"></p></div></div>
+            <div class="graph" id="graph-hoehe"></div>
+            <p class="kartenfuss kartenfuss-dgm"></p>
+          </article>
+
+          <article class="panel" role="tabpanel" id="panel-zwei" data-tab="zwei" aria-labelledby="tab-zwei" hidden>
+            <div class="panel-kopf">
+              <div><h3 data-i18n="panel.zwei"></h3><p data-i18n="panel.zwei.text"></p></div>
+              <div class="steuerung">
+                <label class="feld"><span data-i18n="achse.x"></span><select id="wahl-x" data-zustand="x"></select></label>
+                <label class="feld"><span data-i18n="achse.y"></span><select id="wahl-y" data-zustand="y"></select></label>
+              </div>
+            </div>
+            <div class="graph" id="graph-zwei"></div>
+          </article>
+
+          <article class="panel" role="tabpanel" id="panel-koernung" data-tab="koernung" aria-labelledby="tab-koernung" hidden>
+            <div class="panel-kopf"><div><h3 data-i18n="panel.koernung"></h3><p data-i18n="panel.koernung.text"></p></div></div>
+            <div class="graph graph-hoch" id="graph-koernung"></div>
+          </article>
+
+          <article class="panel" role="tabpanel" id="panel-korr" data-tab="korr" aria-labelledby="tab-korr" hidden>
+            <div class="panel-kopf">
+              <div><h3 data-i18n="panel.korr"></h3><p data-i18n="panel.korr.text"></p></div>
+              <div class="segment" role="group" data-i18n-aria="panel.korr">
+                <button type="button" data-setze="korr" data-wert="alle" data-i18n="korr.alle"></button>
+                <button type="button" data-setze="korr" data-wert="je" data-i18n="korr.je"></button>
+              </div>
+            </div>
+            <div id="korr-alle"><div class="graph graph-hoch" id="graph-korr"></div></div>
+            <div class="panel-zeile" id="korr-je" hidden></div>
+            <details class="hinweis-klapp">
+              <summary><span class="marke-auffaellig" aria-hidden="true">!</span><span data-i18n="korr.hinweis.titel"></span></summary>
+              <p data-i18n-html="korr.hinweis"></p>
+            </details>
+          </article>
+        </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Methoden und Quellen -->
+    <section class="ansicht" id="ansicht-info" data-ansicht="info" hidden>
+      <h1 data-i18n="info.titel"></h1>
+      <p class="lead" data-i18n="info.lead"></p>
+      <h2 data-i18n="info.methoden"></h2>
+      <p data-i18n-html="info.methoden.text"></p>
+      <h2 data-i18n="info.quellen"></h2>
+      <div class="quellen" data-i18n-html="info.quellen.text"></div>
+      <h2 data-i18n="hg.index.titel"></h2>
+      <div class="info-index" data-i18n-html="hg.index.text"></div>
+      <h2 data-i18n="hg.literatur.titel"></h2>
+      <div data-i18n-html="hg.literatur.text"></div>
+    </section>
+  </main>
+
+  <footer class="fuss" data-i18n-html="fuss"></footer>
+</body>
+</html>

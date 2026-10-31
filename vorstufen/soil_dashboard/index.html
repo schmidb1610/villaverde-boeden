@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Bodenproben – fiktiver Grünland-Versuch</title>
+  <meta name="description" content="Fiktiver Bodenproben-Datensatz (Kursprojekt): Tabelle, Graphen, Datenqualität, Deutsch/Englisch.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='4' fill='%239a4a23'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="css/style.css">
+  <!-- Bibliotheken mit fester Version (geprüft am 29.10.2026) -->
+  <script defer src="https://cdn.jsdelivr.net/npm/papaparse@5.7.0/papaparse.min.js"
+          integrity="sha384-Cac1u6+UwTX6dLDygwZYoxzTmqBikf22tn1qbNy+EVRSvn+FIh9oC/VRmAaL4Ih9" crossorigin="anonymous"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/plotly.js-dist-min@4.1.2/plotly.min.js"
+          integrity="sha384-hHv6D3tTUUBpp4tVv6t2Dc3oGuRhphmWOTKUR8jWyN0Pnon1g3iebKCNDNmKmxo8" crossorigin="anonymous"></script>
+  <script defer src="js/i18n.js"></script>
+  <script defer src="js/daten.js"></script>
+  <script defer src="js/tabelle.js"></script>
+  <script defer src="js/graphen.js"></script>
+  <script defer src="js/app.js"></script>
+</head>
+<body>
+  <header class="kopf">
+    <div class="kopf-innen">
+      <a class="marke" href="#start" data-i18n="marke">Bodenproben</a>
+      <nav class="nav" data-i18n-aria="nav.label" aria-label="Ansichten">
+        <a href="#start" data-ansicht="start" data-i18n="nav.start">Übersicht</a>
+        <a href="#tabelle" data-ansicht="tabelle" data-i18n="nav.tabelle">Tabelle</a>
+        <a href="#graphen" data-ansicht="graphen" data-i18n="nav.graphen">Graphen</a>
+        <a href="#qualitaet" data-ansicht="qualitaet" data-i18n="nav.qualitaet">Datenqualität</a>
+        <a href="#info" data-ansicht="info" data-i18n="nav.info">Über die Daten</a>
+      </nav>
+      <div class="segment" role="group" data-i18n-aria="sprache" aria-label="Sprache">
+        <button type="button" data-sprache="de" aria-pressed="true" lang="de">DE</button>
+        <button type="button" data-sprache="en" aria-pressed="false" lang="en">EN</button>
+      </div>
+    </div>
+  </header>
+
+  <main id="inhalt">
+    <!-- Laden und Ersatzweg über Datei-Wähler -->
+    <div id="laden" class="laden-hinweis">
+      <p class="klein" data-i18n="laden.lade">Daten werden geladen …</p>
+    </div>
+    <div id="ladefehler" class="laden-hinweis karte" hidden>
+      <h2 data-i18n="laden.titel">Daten konnten nicht geladen werden</h2>
+      <p data-i18n="laden.text"></p>
+      <pre id="startbefehl"></pre>
+      <p data-i18n="laden.oder"></p>
+      <label class="knopf knopf-voll datei-waehler">
+        <input type="file" id="datei" accept=".csv,text/csv">
+        <span data-i18n="laden.knopf">CSV-Datei wählen</span>
+      </label>
+      <p id="dateifehler" class="klein" role="alert"></p>
+    </div>
+
+    <!-- Übersicht -->
+    <section class="ansicht" id="ansicht-start" data-ansicht="start" hidden>
+      <p class="eyebrow" data-i18n="start.eyebrow"></p>
+      <h1 data-i18n="start.titel"></h1>
+      <p class="lead" id="start-lead"></p>
+      <div class="fiktiv" role="note">
+        <span class="fiktiv-zeichen" aria-hidden="true">i</span>
+        <div>
+          <strong data-i18n="fiktiv.titel">Fiktive Daten</strong>
+          <p data-i18n="fiktiv.text"></p>
+        </div>
+      </div>
+      <div class="kacheln" id="kacheln"></div>
+      <h2 data-i18n="start.weiter"></h2>
+      <div class="wege">
+        <a class="weg karte-weiss" href="#tabelle"><h3 data-i18n="nav.tabelle"></h3><p data-i18n="weg.tabelle"></p></a>
+        <a class="weg karte-weiss" href="#graphen"><h3 data-i18n="nav.graphen"></h3><p data-i18n="weg.graphen"></p></a>
+        <a class="weg karte-weiss" href="#qualitaet"><h3 data-i18n="nav.qualitaet"></h3><p data-i18n="weg.qualitaet"></p></a>
+        <a class="weg karte-weiss" href="#info"><h3 data-i18n="nav.info"></h3><p data-i18n="weg.info"></p></a>
+      </div>
+    </section>
+
+    <!-- Tabelle -->
+    <section class="ansicht" id="ansicht-tabelle" data-ansicht="tabelle" hidden>
+      <h1 data-i18n="tabelle.titel"></h1>
+      <p class="lead" data-i18n="tabelle.lead"></p>
+      <div class="tabellen-kopf">
+        <div class="steuerung">
+          <div class="steuerung filter-ort"></div>
+          <label class="feld feld-suche">
+            <span data-i18n="suche.label"></span>
+            <input type="search" class="suche" data-i18n-platzhalter="suche.platzhalter" autocomplete="off">
+          </label>
+          <button type="button" class="knopf zuruecksetzen" data-i18n="filter.zuruecksetzen"></button>
+        </div>
+      </div>
+      <div class="tabellen-kopf">
+        <span class="zaehler" id="tabelle-zaehler" aria-live="polite"></span>
+        <button type="button" class="knopf" id="download" data-i18n="knopf.download"></button>
+      </div>
+      <div class="tabellen-rahmen" id="tabelle" tabindex="0"></div>
+      <div class="legende">
+        <span><span class="muster muster-auffaellig"></span><span class="marke-auffaellig" aria-hidden="true">!</span><span data-i18n="legende.auffaellig"></span></span>
+        <span><span class="muster muster-fehlt"></span><span>– <span class="marke-fehlt" data-i18n="fehlt"></span></span><span data-i18n="legende.fehlt"></span></span>
+      </div>
+    </section>
+
+    <!-- Graphen -->
+    <section class="ansicht" id="ansicht-graphen" data-ansicht="graphen" hidden>
+      <h1 data-i18n="graphen.titel"></h1>
+      <p class="lead" data-i18n="graphen.lead"></p>
+      <div class="graphen-layout">
+        <aside class="leiste">
+          <label class="feld"><span data-i18n="leiste.messgroesse"></span><select id="wahl-messgroesse" data-zustand="messgroesse"></select></label>
+          <label class="feld"><span data-i18n="leiste.gruppe"></span><select id="wahl-gruppe" data-zustand="gruppe"></select></label>
+          <hr>
+          <div class="filter-ort"></div>
+          <label class="feld"><span data-i18n="suche.label"></span><input type="search" class="suche" data-i18n-platzhalter="suche.platzhalter" autocomplete="off"></label>
+          <button type="button" class="knopf zuruecksetzen" data-i18n="filter.zuruecksetzen"></button>
+          <hr>
+          <label class="schalter ganz">
+            <input type="checkbox" id="wahl-ausblenden" data-zustand="ausblenden">
+            <span class="schalter-spur" aria-hidden="true"></span>
+            <span data-i18n="leiste.ausblenden"></span>
+          </label>
+          <p class="klein ganz" data-i18n="leiste.ausblenden.info"></p>
+          <p class="zaehler ganz" id="graphen-zaehler" aria-live="polite"></p>
+        </aside>
+
+        <div class="panels" id="panels">
+          <article class="panel">
+            <div class="panel-kopf"><div><h3 data-i18n="panel.verteilung"></h3><p data-i18n="panel.verteilung.text"></p></div></div>
+            <div class="panel-zeile">
+              <div class="graph" id="graph-hist"></div>
+              <div class="graph" id="graph-box"></div>
+            </div>
+          </article>
+
+          <article class="panel">
+            <div class="panel-kopf"><div><h3 data-i18n="panel.artenzahl"></h3><p data-i18n="panel.artenzahl.text"></p></div></div>
+            <div class="graph" id="graph-arten"></div>
+          </article>
+
+          <article class="panel">
+            <div class="panel-kopf"><div><h3 data-i18n="panel.zeit"></h3><p data-i18n="panel.zeit.text"></p></div></div>
+            <div class="graph" id="graph-zeit"></div>
+          </article>
+
+          <article class="panel">
+            <div class="panel-kopf">
+              <div><h3 data-i18n="panel.zwei"></h3><p data-i18n="panel.zwei.text"></p></div>
+              <div class="steuerung">
+                <label class="feld"><span data-i18n="achse.x"></span><select id="wahl-x" data-zustand="x"></select></label>
+                <label class="feld"><span data-i18n="achse.y"></span><select id="wahl-y" data-zustand="y"></select></label>
+              </div>
+            </div>
+            <div class="graph" id="graph-zwei"></div>
+          </article>
+
+          <article class="panel">
+            <div class="panel-kopf">
+              <div><h3 data-i18n="panel.korr"></h3><p data-i18n="panel.korr.text"></p></div>
+              <div class="segment" role="group" data-i18n-aria="panel.korr">
+                <button type="button" data-setze="korr" data-wert="alle" aria-pressed="true" data-i18n="korr.alle"></button>
+                <button type="button" data-setze="korr" data-wert="je" aria-pressed="false" data-i18n="korr.je"></button>
+              </div>
+            </div>
+            <p class="hinweis" data-i18n-html="korr.hinweis"></p>
+            <div id="korr-alle"><div class="graph" id="graph-korr"></div></div>
+            <div class="panel-zeile" id="korr-je" hidden></div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- Datenqualität -->
+    <section class="ansicht" id="ansicht-qualitaet" data-ansicht="qualitaet" hidden>
+      <h1 data-i18n="qualitaet.titel"></h1>
+      <p class="lead" data-i18n="qualitaet.lead"></p>
+      <h2 data-i18n="qualitaet.liste"></h2>
+      <div id="q-liste"></div>
+      <div class="zwei-spalten">
+        <div class="karte">
+          <h3 data-i18n="qualitaet.fehlend"></h3>
+          <p class="klein" data-i18n="qualitaet.fehlend.text"></p>
+          <div id="q-fehlend"></div>
+        </div>
+        <div class="karte">
+          <h3 data-i18n="qualitaet.beob"></h3>
+          <p class="klein" data-i18n="qualitaet.beob.text"></p>
+          <div id="q-beob"></div>
+        </div>
+      </div>
+      <h2 data-i18n="qualitaet.regeln"></h2>
+      <ul id="q-regeln"></ul>
+    </section>
+
+    <!-- Über die Daten -->
+    <section class="ansicht" id="ansicht-info" data-ansicht="info" hidden>
+      <h1 data-i18n="info.titel"></h1>
+      <p class="lead" data-i18n="info.lead"></p>
+      <div class="fiktiv" role="note">
+        <span class="fiktiv-zeichen" aria-hidden="true">i</span>
+        <div><strong data-i18n="fiktiv.titel"></strong><p data-i18n="fiktiv.text"></p></div>
+      </div>
+      <h2 data-i18n="info.codebook"></h2>
+      <div class="liste-rahmen" id="info-codebook"></div>
+      <h2 data-i18n="info.herkunft"></h2>
+      <p data-i18n-html="info.herkunft.text"></p>
+      <p data-i18n="info.herkunft.notiz"></p>
+      <h2 data-i18n="info.technik"></h2>
+      <p id="info-technik"></p>
+      <p data-i18n="info.farben.text"></p>
+      <p class="klein" data-i18n="info.zitat"></p>
+    </section>
+  </main>
+
+  <footer class="fuss" data-i18n="fuss"></footer>
+</body>
+</html>

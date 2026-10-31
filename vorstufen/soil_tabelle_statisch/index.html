@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bodenproben – Tabelle</title>
+<!-- Statische Fassung: Daten fest eingebaut aus data/soil_samples_dummy.csv (Stand 29.10.2026),
+     kein JavaScript, kein Server nötig. Gestaltung nach vorlage/doku.css. -->
+<style>
+  :root {
+    --text: #1d1d1f; --text-2: #6e6e73; --linie: #d2d2d7; --linie-2: #e8e8ed;
+    --flaeche: #f5f5f7; --akzent: #9a4a23; --akzent-hell: #f6ece6;
+    --fehlt-flaeche: #f0f0f2;
+    --sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    --display: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0 auto; max-width: 1200px; padding: 56px 24px 80px; font-family: var(--sans); font-size: 16px;
+         line-height: 1.55; color: var(--text); background: #fff; -webkit-font-smoothing: antialiased; }
+  .eyebrow { margin: 0 0 8px; font-size: 13px; font-weight: 600; color: var(--akzent); }
+  h1 { margin: 0; font-family: var(--display); font-size: 40px; line-height: 1.1; font-weight: 700; letter-spacing: -0.025em; }
+  .lead { margin: 12px 0 0; max-width: 760px; font-size: 19px; line-height: 1.45; color: var(--text-2); }
+  .fiktiv { margin: 24px 0 28px; max-width: 760px; padding: 14px 18px; border-radius: 12px;
+            background: var(--akzent-hell); border: 1px solid var(--akzent); font-size: 15px; }
+  .fiktiv strong { color: var(--akzent); }
+  .rahmen { max-height: 75vh; overflow: auto; border: 1px solid var(--linie); border-radius: 12px; }
+  table { width: 100%; min-width: 1060px; border-collapse: separate; border-spacing: 0; font-size: 14px; }
+  th, td { padding: 7px 12px; border-bottom: 1px solid var(--linie-2); text-align: left; white-space: nowrap; vertical-align: top; }
+  thead th { position: sticky; top: 0; background: var(--flaeche); border-bottom: 1px solid var(--linie);
+             font-size: 12px; font-weight: 600; color: var(--text-2); vertical-align: bottom; }
+  .einheit { display: block; font-weight: 400; }
+  .z { text-align: right; font-variant-numeric: tabular-nums; }
+  td.notiz { white-space: normal; min-width: 120px; color: var(--text-2); }
+  tbody tr:hover td { background: #fbfbfd; }
+  td.fehlt { background: var(--fehlt-flaeche); color: var(--text-2); text-align: right; }
+  .marke { display: inline-block; margin-left: 6px; padding: 0 6px; border-radius: 4px; border: 1px dashed var(--text-2);
+           font-size: 11px; line-height: 16px; }
+  .fuss { margin-top: 16px; font-size: 13px; color: var(--text-2); }
+  @media (max-width: 600px) { body { padding: 32px 16px 64px; } h1 { font-size: 30px; } .lead { font-size: 17px; } }
+  @media print { .rahmen { max-height: none; overflow: visible; border: 0; } table { min-width: 0; font-size: 8pt; }
+                 th, td { padding: 3px 5px; } thead th { position: static; } }
+</style>
+</head>
+<body>
+<p class="eyebrow">Kursprojekt · AI-supported Coding with GitHub Copilot</p>
+<h1>Bodenproben aus einem Grünland-Versuch</h1>
+<p class="lead">120 Bodenproben von 40 Plots in 4 Blöcken,
+jeder Plot in 3 Kampagnen 2025 beprobt (Mai, Juli, September).</p>
+<p class="fiktiv"><strong>Fiktive Daten.</strong> Alle Werte sind synthetisch erzeugt (R-Skript generate_soil_samples.R,
+set.seed(42)). Es handelt sich nicht um echte Messungen.</p>
+<div class="rahmen" tabindex="0">
+<table>
+<caption style="position:absolute;left:-9999px">Bodenproben, 120 Zeilen</caption>
+<thead><tr><th scope="col">Probe</th><th scope="col">Plot</th><th scope="col">Block</th><th scope="col" class=z>Artenzahl<span class="einheit">Arten</span></th><th scope="col">Datum</th><th scope="col">Beobachter</th><th scope="col" class=z>Bodenfeuchte<span class="einheit">Vol.-%</span></th><th scope="col" class=z>Bodentemperatur<span class="einheit">°C</span></th><th scope="col" class=z>pH<span class="einheit">CaCl₂</span></th><th scope="col" class=z>Org. Kohlenstoff<span class="einheit">% TM</span></th><th scope="col" class=z>Biomasse<span class="einheit">g/m²</span></th><th scope="col">Notiz</th></tr></thead>
+<tbody>
+<tr><td>S001</td><td>P01</td><td>B1</td><td class="z">1</td><td>20.05.2025</td><td>BM</td><td class="z">40,3</td><td class="z">12,6</td><td class="z">5,71</td><td class="z">2,09</td><td class="z">140,8</td><td class="notiz"></td></tr>
+<tr><td>S002</td><td>P02</td><td>B1</td><td class="z">16</td><td>20.05.2025</td><td>AK</td><td class="z">42,3</td><td class="z">11,3</td><td class="z">5,53</td><td class="z">2,17</td><td class="z">290,8</td><td class="notiz"></td></tr>
+<tr><td>S003</td><td>P03</td><td>B1</td><td class="z">16</td><td>20.05.2025</td><td>BM</td><td class="z">37,2</td><td class="z">12,7</td><td class="z">5,61</td><td class="z">2,33</td><td class="z">252,2</td><td class="notiz"></td></tr>
+<tr><td>S004</td><td>P04</td><td>B1</td><td class="z">4</td><td>20.05.2025</td><td>BM</td><td class="z">23,1</td><td class="z">13,5</td><td class="z">5,57</td><td class="z">2,24</td><td class="z">271,9</td><td class="notiz"></td></tr>
+<tr><td>S005</td><td>P05</td><td>B1</td><td class="z">2</td><td>20.05.2025</td><td>BM</td><td class="z">36,1</td><td class="z">13,8</td><td class="z">5,76</td><td class="z">2,08</td><td class="z">130,8</td><td class="notiz"></td></tr>
+<tr><td>S006</td><td>P06</td><td>B1</td><td class="z">8</td><td>20.05.2025</td><td>CS</td><td class="z">40,3</td><td class="z">12,1</td><td class="z">5,61</td><td class="z">2,28</td><td class="z">286,8</td><td class="notiz"></td></tr>
+<tr><td>S007</td><td>P07</td><td>B1</td><td class="z">1</td><td>20.05.2025</td><td>BM</td><td class="z">35,2</td><td class="z">12,7</td><td class="z">5,55</td><td class="z">2,08</td><td class="z">112,5</td><td class="notiz"></td></tr>
+<tr><td>S008</td><td>P08</td><td>B1</td><td class="z">8</td><td>20.05.2025</td><td>BM</td><td class="z">38,2</td><td class="z">11,6</td><td class="z">5,55</td><td class="z">2,10</td><td class="z">377,6</td><td class="notiz">after rain</td></tr>
+<tr><td>S009</td><td>P09</td><td>B1</td><td class="z">2</td><td>20.05.2025</td><td>BM</td><td class="z">38,0</td><td class="z">12,1</td><td class="z">5,50</td><td class="z">2,07</td><td class="z">151,5</td><td class="notiz"></td></tr>
+<tr><td>S010</td><td>P10</td><td>B1</td><td class="z">4</td><td>20.05.2025</td><td>BM</td><td class="z">34,6</td><td class="z">11,9</td><td class="z">5,77</td><td class="z">1,88</td><td class="z">221,7</td><td class="notiz"></td></tr>
+<tr><td>S011</td><td>P11</td><td>B2</td><td class="z">4</td><td>20.05.2025</td><td>BM</td><td class="z">43,1</td><td class="z">14,1</td><td class="z">6,66</td><td class="z">2,00</td><td class="z">156,3</td><td class="notiz"></td></tr>
+<tr><td>S012</td><td>P12</td><td>B2</td><td class="z">2</td><td>20.05.2025</td><td>BM</td><td class="z">38,2</td><td class="z">13,1</td><td class="z">6,30</td><td class="z">1,87</td><td class="z">173,4</td><td class="notiz"></td></tr>
+<tr><td>S013</td><td>P13</td><td>B2</td><td class="z">8</td><td>20.05.2025</td><td>AK</td><td class="z">31,2</td><td class="z">12,4</td><td class="z">6,41</td><td class="z">2,97</td><td class="z">233,8</td><td class="notiz"></td></tr>
+<tr><td>S014</td><td>P14</td><td>B2</td><td class="z">1</td><td>20.05.2025</td><td>BM</td><td class="z">41,9</td><td class="z">13,1</td><td class="z">6,46</td><td class="z">1,57</td><td class="z">69,3</td><td class="notiz"></td></tr>
+<tr><td>S015</td><td>P15</td><td>B2</td><td class="z">16</td><td>20.05.2025</td><td>CS</td><td class="z">44,2</td><td class="z">11,6</td><td class="z">6,29</td><td class="z">2,31</td><td class="z">435,5</td><td class="notiz"></td></tr>
+<tr><td>S016</td><td>P16</td><td>B2</td><td class="z">16</td><td>20.05.2025</td><td>BM</td><td class="z">42,3</td><td class="z">12,9</td><td class="z">6,71</td><td class="z">2,03</td><td class="z">339,6</td><td class="notiz"></td></tr>
+<tr><td>S017</td><td>P17</td><td>B2</td><td class="z">2</td><td>20.05.2025</td><td>AK</td><td class="z">27,5</td><td class="z">11,7</td><td class="z">6,39</td><td class="z">1,66</td><td class="z">153,5</td><td class="notiz"></td></tr>
+<tr><td>S018</td><td>P18</td><td>B2</td><td class="z">1</td><td>20.05.2025</td><td>BM</td><td class="z">32,2</td><td class="z">12,7</td><td class="z">6,47</td><td class="z">1,84</td><td class="z">175,0</td><td class="notiz"></td></tr>
+<tr><td>S019</td><td>P19</td><td>B2</td><td class="z">8</td><td>20.05.2025</td><td>BM</td><td class="z">40,6</td><td class="z">12,0</td><td class="z">6,41</td><td class="z">2,06</td><td class="z">256,4</td><td class="notiz"></td></tr>
+<tr><td>S020</td><td>P20</td><td>B2</td><td class="z">4</td><td>20.05.2025</td><td>AK</td><td class="z">36,8</td><td class="z">11,5</td><td class="z">6,60</td><td class="z">2,00</td><td class="z">228,6</td><td class="notiz"></td></tr>
+<tr><td>S021</td><td>P21</td><td>B3</td><td class="z">8</td><td>20.05.2025</td><td>CS</td><td class="z">39,1</td><td class="z">9,5</td><td class="z">6,95</td><td class="z">2,00</td><td class="z">417,6</td><td class="notiz"></td></tr>
+<tr><td>S022</td><td>P22</td><td>B3</td><td class="z">16</td><td>20.05.2025</td><td>CS</td><td class="z">50,5</td><td class="z">11,8</td><td class="z">6,66</td><td class="z">1,86</td><td class="z">280,3</td><td class="notiz"></td></tr>
+<tr><td>S023</td><td>P23</td><td>B3</td><td class="z">4</td><td>20.05.2025</td><td>BM</td><td class="z">32,5</td><td class="z">12,2</td><td class="z">6,72</td><td class="z">1,74</td><td class="z">329,2</td><td class="notiz"></td></tr>
+<tr><td>S024</td><td>P24</td><td>B3</td><td class="z">8</td><td>20.05.2025</td><td>CS</td><td class="z">26,8</td><td class="z">13,4</td><td class="z">6,93</td><td class="z">1,96</td><td class="z">301,8</td><td class="notiz"></td></tr>
+<tr><td>S025</td><td>P25</td><td>B3</td><td class="z">16</td><td>20.05.2025</td><td>BM</td><td class="z">39,6</td><td class="z">8,2</td><td class="z">6,69</td><td class="z">2,41</td><td class="z">444,7</td><td class="notiz"></td></tr>
+<tr><td>S026</td><td>P26</td><td>B3</td><td class="z">1</td><td>20.05.2025</td><td>BM</td><td class="z">31,6</td><td class="z">11,8</td><td class="z">6,76</td><td class="z">2,23</td><td class="z">164,9</td><td class="notiz"></td></tr>
+<tr><td>S027</td><td>P27</td><td>B3</td><td class="z">1</td><td>20.05.2025</td><td>CS</td><td class="z">37,2</td><td class="z">12,3</td><td class="z">6,64</td><td class="z">1,87</td><td class="z">161,8</td><td class="notiz"></td></tr>
+<tr><td>S028</td><td>P28</td><td>B3</td><td class="z">2</td><td>20.05.2025</td><td>AK</td><td class="z">31,7</td><td class="z">10,5</td><td class="z">6,83</td><td class="z">1,97</td><td class="z">188,5</td><td class="notiz"></td></tr>
+<tr><td>S029</td><td>P29</td><td>B3</td><td class="z">4</td><td>20.05.2025</td><td>AK</td><td class="z">47,7</td><td class="z">10,1</td><td class="z">7,06</td><td class="z">2,50</td><td class="z">379,1</td><td class="notiz"></td></tr>
+<tr><td>S030</td><td>P30</td><td>B3</td><td class="z">2</td><td>20.05.2025</td><td>AK</td><td class="z">35,2</td><td class="z">11,1</td><td class="z">6,66</td><td class="z">2,57</td><td class="z">250,3</td><td class="notiz"></td></tr>
+<tr><td>S031</td><td>P31</td><td>B4</td><td class="z">4</td><td>20.05.2025</td><td>CS</td><td class="z">34,2</td><td class="z">11,1</td><td class="z">7,03</td><td class="z">1,74</td><td class="z">252,1</td><td class="notiz"></td></tr>
+<tr><td>S032</td><td>P32</td><td>B4</td><td class="z">1</td><td>20.05.2025</td><td>BM</td><td class="z">34,2</td><td class="z">10,3</td><td class="z">6,98</td><td class="z">1,91</td><td class="z">132,9</td><td class="notiz"></td></tr>
+<tr><td>S033</td><td>P33</td><td>B4</td><td class="z">2</td><td>20.05.2025</td><td>BM</td><td class="z">40,1</td><td class="z">12,4</td><td class="z">6,88</td><td class="z">2,35</td><td class="z">229,4</td><td class="notiz"></td></tr>
+<tr><td>S034</td><td>P34</td><td>B4</td><td class="z">1</td><td>20.05.2025</td><td>BM</td><td class="z">35,5</td><td class="z">12,7</td><td class="z">7,24</td><td class="z">1,75</td><td class="z">70,0</td><td class="notiz"></td></tr>
+<tr><td>S035</td><td>P35</td><td>B4</td><td class="z">16</td><td>20.05.2025</td><td>CS</td><td class="z">30,1</td><td class="z">13,0</td><td class="z">7,06</td><td class="z">2,38</td><td class="z">357,3</td><td class="notiz"></td></tr>
+<tr><td>S036</td><td>P36</td><td>B4</td><td class="z">4</td><td>20.05.2025</td><td>AK</td><td class="z">36,6</td><td class="z">13,0</td><td class="z">7,20</td><td class="z">2,08</td><td class="z">246,7</td><td class="notiz"></td></tr>
+<tr><td>S037</td><td>P37</td><td>B4</td><td class="z">8</td><td>20.05.2025</td><td>BM</td><td class="z">41,2</td><td class="z">10,1</td><td class="z">7,17</td><td class="z">2,14</td><td class="z">275,1</td><td class="notiz"></td></tr>
+<tr><td>S038</td><td>P38</td><td>B4</td><td class="z">16</td><td>20.05.2025</td><td>BM</td><td class="z">38,4</td><td class="z">11,0</td><td class="z">7,05</td><td class="z">2,21</td><td class="z">391,6</td><td class="notiz"></td></tr>
+<tr><td>S039</td><td>P39</td><td>B4</td><td class="z">2</td><td>20.05.2025</td><td>CS</td><td class="z">39,5</td><td class="z">11,2</td><td class="z">7,45</td><td class="z">2,15</td><td class="z">256,3</td><td class="notiz">sample wet</td></tr>
+<tr><td>S040</td><td>P40</td><td>B4</td><td class="z">8</td><td>20.05.2025</td><td>AK</td><td class="z">36,7</td><td class="z">12,9</td><td class="z">7,08</td><td class="z">2,29</td><td class="z">265,0</td><td class="notiz">ant nest</td></tr>
+<tr><td>S041</td><td>P01</td><td>B1</td><td class="z">1</td><td>15.07.2025</td><td>BM</td><td class="z">19,7</td><td class="z">19,8</td><td class="z">5,87</td><td class="z">2,05</td><td class="z">152,5</td><td class="notiz"></td></tr>
+<tr><td>S042</td><td>P02</td><td>B1</td><td class="z">16</td><td>15.07.2025</td><td>BM</td><td class="z">25,6</td><td class="z">16,7</td><td class="z">5,71</td><td class="z">2,32</td><td class="z">449,0</td><td class="notiz">trampled</td></tr>
+<tr><td>S043</td><td>P03</td><td>B1</td><td class="z">16</td><td>15.07.2025</td><td>BM</td><td class="z">28,2</td><td class="fehlt">–<span class="marke">fehlt</span></td><td class="z">5,64</td><td class="z">2,31</td><td class="z">388,2</td><td class="notiz"></td></tr>
+<tr><td>S044</td><td>P04</td><td>B1</td><td class="z">4</td><td>15.07.2025</td><td>CS</td><td class="z">15,4</td><td class="z">19,0</td><td class="z">5,70</td><td class="z">2,06</td><td class="z">274,1</td><td class="notiz"></td></tr>
+<tr><td>S045</td><td>P05</td><td>B1</td><td class="z">2</td><td>15.07.2025</td><td>CS</td><td class="z">20,6</td><td class="z">19,4</td><td class="z">5,81</td><td class="z">2,11</td><td class="z">177,8</td><td class="notiz"></td></tr>
+<tr><td>S046</td><td>P06</td><td>B1</td><td class="z">8</td><td>15.07.2025</td><td>CS</td><td class="z">22,0</td><td class="z">20,4</td><td class="z">5,34</td><td class="z">2,31</td><td class="z">381,5</td><td class="notiz"></td></tr>
+<tr><td>S047</td><td>P07</td><td>B1</td><td class="z">1</td><td>15.07.2025</td><td>AK</td><td class="z">16,2</td><td class="z">18,7</td><td class="z">5,62</td><td class="z">2,08</td><td class="z">213,7</td><td class="notiz"></td></tr>
+<tr><td>S048</td><td>P08</td><td>B1</td><td class="z">8</td><td>15.07.2025</td><td>CS</td><td class="z">17,2</td><td class="z">17,2</td><td class="z">5,65</td><td class="z">2,10</td><td class="z">402,7</td><td class="notiz"></td></tr>
+<tr><td>S049</td><td>P09</td><td>B1</td><td class="z">2</td><td>15.07.2025</td><td>CS</td><td class="z">17,6</td><td class="z">17,6</td><td class="z">5,59</td><td class="z">1,83</td><td class="z">188,4</td><td class="notiz"></td></tr>
+<tr><td>S050</td><td>P10</td><td>B1</td><td class="z">4</td><td>15.07.2025</td><td>BM</td><td class="z">24,5</td><td class="z">18,8</td><td class="z">5,62</td><td class="z">1,81</td><td class="z">269,2</td><td class="notiz"></td></tr>
+<tr><td>S051</td><td>P11</td><td>B2</td><td class="z">4</td><td>15.07.2025</td><td>BM</td><td class="z">19,5</td><td class="z">19,4</td><td class="z">6,49</td><td class="z">1,97</td><td class="z">333,2</td><td class="notiz"></td></tr>
+<tr><td>S052</td><td>P12</td><td>B2</td><td class="z">2</td><td>15.07.2025</td><td>AK</td><td class="z">16,9</td><td class="z">16,3</td><td class="z">6,63</td><td class="z">1,83</td><td class="z">271,4</td><td class="notiz"></td></tr>
+<tr><td>S053</td><td>P13</td><td>B2</td><td class="z">8</td><td>15.07.2025</td><td>CS</td><td class="z">23,2</td><td class="z">17,6</td><td class="z">6,29</td><td class="z">2,97</td><td class="z">387,6</td><td class="notiz"></td></tr>
+<tr><td>S054</td><td>P14</td><td>B2</td><td class="z">1</td><td>15.07.2025</td><td>CS</td><td class="z">13,8</td><td class="z">17,9</td><td class="z">6,40</td><td class="z">1,54</td><td class="z">215,0</td><td class="notiz"></td></tr>
+<tr><td>S055</td><td>P15</td><td>B2</td><td class="z">16</td><td>15.07.2025</td><td>CS</td><td class="z">28,4</td><td class="z">19,3</td><td class="z">6,13</td><td class="z">2,38</td><td class="z">434,1</td><td class="notiz"></td></tr>
+<tr><td>S056</td><td>P16</td><td>B2</td><td class="z">16</td><td>15.07.2025</td><td>CS</td><td class="z">20,8</td><td class="z">20,2</td><td class="z">6,61</td><td class="z">1,95</td><td class="z">299,4</td><td class="notiz"></td></tr>
+<tr><td>S057</td><td>P17</td><td>B2</td><td class="z">2</td><td>15.07.2025</td><td>BM</td><td class="z">21,7</td><td class="z">19,2</td><td class="z">6,43</td><td class="z">1,58</td><td class="z">281,2</td><td class="notiz"></td></tr>
+<tr><td>S058</td><td>P18</td><td>B2</td><td class="z">1</td><td>15.07.2025</td><td>BM</td><td class="z">20,3</td><td class="z">20,3</td><td class="z">6,51</td><td class="z">2,15</td><td class="z">307,1</td><td class="notiz"></td></tr>
+<tr><td>S059</td><td>P19</td><td>B2</td><td class="z">8</td><td>15.07.2025</td><td>CS</td><td class="z">22,4</td><td class="z">15,9</td><td class="z">6,40</td><td class="z">1,93</td><td class="z">510,6</td><td class="notiz"></td></tr>
+<tr><td>S060</td><td>P20</td><td>B2</td><td class="z">4</td><td>15.07.2025</td><td>CS</td><td class="z">30,6</td><td class="z">20,4</td><td class="z">6,12</td><td class="z">2,28</td><td class="z">221,9</td><td class="notiz">mown edge</td></tr>
+<tr><td>S061</td><td>P21</td><td>B3</td><td class="z">8</td><td>15.07.2025</td><td>CS</td><td class="z">18,3</td><td class="z">17,7</td><td class="z">6,66</td><td class="z">2,09</td><td class="z">326,3</td><td class="notiz"></td></tr>
+<tr><td>S062</td><td>P22</td><td>B3</td><td class="z">16</td><td>15.07.2025</td><td>BM</td><td class="fehlt">–<span class="marke">fehlt</span></td><td class="z">18,5</td><td class="z">6,83</td><td class="z">2,11</td><td class="z">364,5</td><td class="notiz"></td></tr>
+<tr><td>S063</td><td>P23</td><td>B3</td><td class="z">4</td><td>15.07.2025</td><td>AK</td><td class="z">21,8</td><td class="z">18,1</td><td class="z">6,77</td><td class="z">1,65</td><td class="z">316,1</td><td class="notiz"></td></tr>
+<tr><td>S064</td><td>P24</td><td>B3</td><td class="z">8</td><td>15.07.2025</td><td>AK</td><td class="z">18,2</td><td class="z">18,0</td><td class="z">6,84</td><td class="z">1,90</td><td class="z">334,7</td><td class="notiz"></td></tr>
+<tr><td>S065</td><td>P25</td><td>B3</td><td class="z">16</td><td>15.07.2025</td><td>AK</td><td class="z">22,9</td><td class="z">18,1</td><td class="z">6,85</td><td class="z">2,33</td><td class="z">442,2</td><td class="notiz"></td></tr>
+<tr><td>S066</td><td>P26</td><td>B3</td><td class="z">1</td><td>15.07.2025</td><td>BM</td><td class="z">23,7</td><td class="z">17,8</td><td class="z">6,87</td><td class="z">2,05</td><td class="z">201,8</td><td class="notiz"></td></tr>
+<tr><td>S067</td><td>P27</td><td>B3</td><td class="z">1</td><td>15.07.2025</td><td>AK</td><td class="z">17,9</td><td class="z">18,2</td><td class="z">6,74</td><td class="z">1,76</td><td class="z">314,4</td><td class="notiz"></td></tr>
+<tr><td>S068</td><td>P28</td><td>B3</td><td class="z">2</td><td>15.07.2025</td><td>BM</td><td class="z">16,9</td><td class="z">18,5</td><td class="z">6,77</td><td class="z">2,14</td><td class="z">343,4</td><td class="notiz"></td></tr>
+<tr><td>S069</td><td>P29</td><td>B3</td><td class="z">4</td><td>15.07.2025</td><td>CS</td><td class="z">22,4</td><td class="z">17,7</td><td class="z">6,74</td><td class="z">2,36</td><td class="z">353,0</td><td class="notiz"></td></tr>
+<tr><td>S070</td><td>P30</td><td>B3</td><td class="z">2</td><td>15.07.2025</td><td>CS</td><td class="z">25,7</td><td class="z">18,6</td><td class="z">6,67</td><td class="z">2,30</td><td class="z">3.202,4</td><td class="notiz"></td></tr>
+<tr><td>S071</td><td>P31</td><td>B4</td><td class="z">4</td><td>15.07.2025</td><td>BM</td><td class="z">21,2</td><td class="z">17,9</td><td class="z">7,12</td><td class="z">1,83</td><td class="z">340,1</td><td class="notiz"></td></tr>
+<tr><td>S072</td><td>P32</td><td>B4</td><td class="z">1</td><td>15.07.2025</td><td>BM</td><td class="z">13,1</td><td class="z">21,0</td><td class="z">7,17</td><td class="z">1,89</td><td class="z">24,5</td><td class="notiz"></td></tr>
+<tr><td>S073</td><td>P33</td><td>B4</td><td class="z">2</td><td>15.07.2025</td><td>BM</td><td class="z">14,3</td><td class="z">18,9</td><td class="z">6,95</td><td class="z">2,16</td><td class="z">369,3</td><td class="notiz"></td></tr>
+<tr><td>S074</td><td>P34</td><td>B4</td><td class="z">1</td><td>15.07.2025</td><td>BM</td><td class="z">16,2</td><td class="z">23,5</td><td class="z">7,10</td><td class="z">1,85</td><td class="z">137,4</td><td class="notiz"></td></tr>
+<tr><td>S075</td><td>P35</td><td>B4</td><td class="z">16</td><td>15.07.2025</td><td>BM</td><td class="z">20,6</td><td class="z">17,3</td><td class="z">7,26</td><td class="z">2,32</td><td class="z">346,4</td><td class="notiz"></td></tr>
+<tr><td>S076</td><td>P36</td><td>B4</td><td class="z">4</td><td>15.07.2025</td><td>CS</td><td class="z">21,5</td><td class="z">19,2</td><td class="z">7,23</td><td class="z">2,17</td><td class="z">341,7</td><td class="notiz"></td></tr>
+<tr><td>S077</td><td>P37</td><td>B4</td><td class="z">8</td><td>15.07.2025</td><td>ak</td><td class="z">25,8</td><td class="z">20,6</td><td class="z">7,16</td><td class="z">2,06</td><td class="z">360,7</td><td class="notiz"></td></tr>
+<tr><td>S078</td><td>P38</td><td>B4</td><td class="z">16</td><td>15.07.2025</td><td>CS</td><td class="z">21,0</td><td class="z">18,1</td><td class="z">6,83</td><td class="z">2,11</td><td class="z">405,3</td><td class="notiz"></td></tr>
+<tr><td>S079</td><td>P39</td><td>B4</td><td class="z">2</td><td>15.07.2025</td><td>BM</td><td class="z">15,2</td><td class="z">17,6</td><td class="z">7,16</td><td class="z">2,04</td><td class="z">265,5</td><td class="notiz"></td></tr>
+<tr><td>S080</td><td>P40</td><td>B4</td><td class="z">8</td><td>15.07.2025</td><td>BM</td><td class="z">25,4</td><td class="z">16,7</td><td class="z">7,07</td><td class="z">2,04</td><td class="z">386,0</td><td class="notiz"></td></tr>
+<tr><td>S081</td><td>P01</td><td>B1</td><td class="z">1</td><td>10.09.2025</td><td>ak</td><td class="z">31,4</td><td class="z">15,3</td><td class="z">5,58</td><td class="z">1,96</td><td class="z">83,0</td><td class="notiz"></td></tr>
+<tr><td>S082</td><td>P02</td><td>B1</td><td class="z">16</td><td>10.09.2025</td><td>CS</td><td class="z">39,0</td><td class="z">15,0</td><td class="z">5,74</td><td class="z">2,09</td><td class="z">315,6</td><td class="notiz"></td></tr>
+<tr><td>S083</td><td>P03</td><td>B1</td><td class="z">16</td><td>10.09.2025</td><td>AK</td><td class="z">24,8</td><td class="fehlt">–<span class="marke">fehlt</span></td><td class="z">5,57</td><td class="z">2,18</td><td class="z">233,1</td><td class="notiz"></td></tr>
+<tr><td>S084</td><td>P04</td><td>B1</td><td class="z">4</td><td>10.09.2025</td><td>AK</td><td class="z">32,0</td><td class="z">11,9</td><td class="z">5,67</td><td class="z">2,27</td><td class="z">186,9</td><td class="notiz"></td></tr>
+<tr><td>S085</td><td>P05</td><td>B1</td><td class="z">2</td><td>10.09.2025</td><td>BM</td><td class="z">37,6</td><td class="z">13,9</td><td class="z">5,67</td><td class="z">2,08</td><td class="z">161,2</td><td class="notiz"></td></tr>
+<tr><td>S086</td><td>P06</td><td>B1</td><td class="z">8</td><td>10.09.2025</td><td>BM</td><td class="z">36,0</td><td class="z">14,0</td><td class="z">5,49</td><td class="z">2,21</td><td class="z">247,0</td><td class="notiz"></td></tr>
+<tr><td>S087</td><td>P07</td><td>B1</td><td class="z">1</td><td>10.09.2025</td><td>CS</td><td class="z">25,8</td><td class="z">13,1</td><td class="z">5,61</td><td class="z">2,20</td><td class="z">141,4</td><td class="notiz"></td></tr>
+<tr><td>S088</td><td>P08</td><td>B1</td><td class="z">8</td><td>10.09.2025</td><td>BM</td><td class="z">36,1</td><td class="z">15,1</td><td class="z">5,72</td><td class="z">2,11</td><td class="z">222,8</td><td class="notiz"></td></tr>
+<tr><td>S089</td><td>P09</td><td>B1</td><td class="z">2</td><td>10.09.2025</td><td>CS</td><td class="z">26,4</td><td class="z">12,1</td><td class="z">5,49</td><td class="z">1,90</td><td class="z">119,2</td><td class="notiz"></td></tr>
+<tr><td>S090</td><td>P10</td><td>B1</td><td class="z">4</td><td>10.09.2025</td><td>BM</td><td class="z">29,3</td><td class="z">14,6</td><td class="z">5,52</td><td class="z">1,82</td><td class="z">201,7</td><td class="notiz"></td></tr>
+<tr><td>S091</td><td>P11</td><td>B2</td><td class="z">4</td><td>10.09.2025</td><td>BM</td><td class="z">37,5</td><td class="z">14,3</td><td class="z">6,47</td><td class="z">2,02</td><td class="z">154,5</td><td class="notiz"></td></tr>
+<tr><td>S092</td><td>P12</td><td>B2</td><td class="z">2</td><td>10.09.2025</td><td>AK</td><td class="z">29,3</td><td class="z">13,9</td><td class="z">6,43</td><td class="z">2,09</td><td class="z">183,7</td><td class="notiz"></td></tr>
+<tr><td>S093</td><td>P13</td><td>B2</td><td class="z">8</td><td>10.09.2025</td><td>AK</td><td class="z">36,5</td><td class="z">13,7</td><td class="z">6,60</td><td class="z">2,88</td><td class="z">239,6</td><td class="notiz"></td></tr>
+<tr><td>S094</td><td>P14</td><td>B2</td><td class="z">1</td><td>10.09.2025</td><td>AK</td><td class="z">28,5</td><td class="z">16,0</td><td class="z">6,09</td><td class="z">1,60</td><td class="z">48,9</td><td class="notiz"></td></tr>
+<tr><td>S095</td><td>P15</td><td>B2</td><td class="z">16</td><td>10.09.2025</td><td>CS</td><td class="z">25,3</td><td class="z">14,3</td><td class="z">6,39</td><td class="z">2,24</td><td class="z">266,6</td><td class="notiz"></td></tr>
+<tr><td>S096</td><td>P16</td><td>B2</td><td class="z">16</td><td>10.09.2025</td><td>BM</td><td class="z">29,0</td><td class="z">13,5</td><td class="z">6,53</td><td class="z">1,98</td><td class="z">281,5</td><td class="notiz"></td></tr>
+<tr><td>S097</td><td>P17</td><td>B2</td><td class="z">2</td><td>10.09.2025</td><td>BM</td><td class="z">25,4</td><td class="z">12,2</td><td class="z">6,47</td><td class="z">1,86</td><td class="z">187,4</td><td class="notiz"></td></tr>
+<tr><td>S098</td><td>P18</td><td>B2</td><td class="z">1</td><td>10.09.2025</td><td>AK</td><td class="z">27,6</td><td class="z">12,9</td><td class="z">6,51</td><td class="z">2,00</td><td class="z">176,2</td><td class="notiz"></td></tr>
+<tr><td>S099</td><td>P19</td><td>B2</td><td class="z">8</td><td>10.09.2025</td><td>ak</td><td class="z">30,7</td><td class="z">11,8</td><td class="z">6,47</td><td class="z">2,02</td><td class="z">305,8</td><td class="notiz"></td></tr>
+<tr><td>S100</td><td>P20</td><td>B2</td><td class="z">4</td><td>10.09.2025</td><td>BM</td><td class="z">30,8</td><td class="z">15,8</td><td class="z">6,21</td><td class="z">2,19</td><td class="z">137,3</td><td class="notiz"></td></tr>
+<tr><td>S101</td><td>P21</td><td>B3</td><td class="z">8</td><td>10.09.2025</td><td>BM</td><td class="fehlt">–<span class="marke">fehlt</span></td><td class="fehlt">–<span class="marke">fehlt</span></td><td class="z">7,02</td><td class="z">2,28</td><td class="z">424,0</td><td class="notiz"></td></tr>
+<tr><td>S102</td><td>P22</td><td>B3</td><td class="z">16</td><td>10.09.2025</td><td>CS</td><td class="z">42,7</td><td class="fehlt">–<span class="marke">fehlt</span></td><td class="z">6,62</td><td class="z">2,23</td><td class="z">367,1</td><td class="notiz"></td></tr>
+<tr><td>S103</td><td>P23</td><td>B3</td><td class="z">4</td><td>10.09.2025</td><td>AK</td><td class="z">24,7</td><td class="z">11,9</td><td class="z">6,87</td><td class="z">1,55</td><td class="z">272,5</td><td class="notiz"></td></tr>
+<tr><td>S104</td><td>P24</td><td>B3</td><td class="z">8</td><td>10.09.2025</td><td>AK</td><td class="z">30,3</td><td class="z">12,9</td><td class="z">6,84</td><td class="z">1,86</td><td class="z">303,8</td><td class="notiz"></td></tr>
+<tr><td>S105</td><td>P25</td><td>B3</td><td class="z">16</td><td>10.09.2025</td><td>AK</td><td class="fehlt">–<span class="marke">fehlt</span></td><td class="z">14,3</td><td class="z">6,69</td><td class="z">2,29</td><td class="z">293,0</td><td class="notiz"></td></tr>
+<tr><td>S106</td><td>P26</td><td>B3</td><td class="z">1</td><td>10.09.2025</td><td>CS</td><td class="z">38,1</td><td class="z">14,9</td><td class="z">6,75</td><td class="z">2,16</td><td class="z">116,8</td><td class="notiz"></td></tr>
+<tr><td>S107</td><td>P27</td><td>B3</td><td class="z">1</td><td>10.09.2025</td><td>AK</td><td class="z">30,4</td><td class="z">15,0</td><td class="z">6,78</td><td class="z">1,88</td><td class="z">110,7</td><td class="notiz"></td></tr>
+<tr><td>S108</td><td>P28</td><td>B3</td><td class="z">2</td><td>10.09.2025</td><td>AK</td><td class="z">37,0</td><td class="z">14,4</td><td class="z">7,09</td><td class="z">2,12</td><td class="z">184,2</td><td class="notiz">mole hill</td></tr>
+<tr><td>S109</td><td>P29</td><td>B3</td><td class="z">4</td><td>10.09.2025</td><td>CS</td><td class="z">23,4</td><td class="z">15,4</td><td class="z">6,97</td><td class="z">2,37</td><td class="z">258,9</td><td class="notiz"></td></tr>
+<tr><td>S110</td><td>P30</td><td>B3</td><td class="z">2</td><td>10.09.2025</td><td>BM</td><td class="z">38,0</td><td class="z">13,4</td><td class="z">6,80</td><td class="z">2,40</td><td class="z">233,3</td><td class="notiz"></td></tr>
+<tr><td>S111</td><td>P31</td><td>B4</td><td class="z">4</td><td>10.09.2025</td><td>CS</td><td class="z">28,1</td><td class="z">15,3</td><td class="z">7,10</td><td class="z">1,96</td><td class="z">190,6</td><td class="notiz"></td></tr>
+<tr><td>S112</td><td>P32</td><td>B4</td><td class="z">1</td><td>10.09.2025</td><td>AK</td><td class="z">28,6</td><td class="z">16,1</td><td class="z">6,92</td><td class="z">1,96</td><td class="z">125,2</td><td class="notiz"></td></tr>
+<tr><td>S113</td><td>P33</td><td>B4</td><td class="z">2</td><td>10.09.2025</td><td>BM</td><td class="z">25,3</td><td class="z">13,2</td><td class="z">7,05</td><td class="z">2,31</td><td class="z">176,3</td><td class="notiz"></td></tr>
+<tr><td>S114</td><td>P34</td><td>B4</td><td class="z">1</td><td>10.09.2025</td><td>AK</td><td class="z">30,7</td><td class="z">15,9</td><td class="z">7,14</td><td class="z">1,98</td><td class="z">28,8</td><td class="notiz"></td></tr>
+<tr><td>S115</td><td>P35</td><td>B4</td><td class="z">16</td><td>10.09.2025</td><td>CS</td><td class="z">42,1</td><td class="z">13,5</td><td class="z">7,19</td><td class="z">2,31</td><td class="z">306,3</td><td class="notiz"></td></tr>
+<tr><td>S116</td><td>P36</td><td>B4</td><td class="z">4</td><td>10.09.2025</td><td>BM</td><td class="fehlt">–<span class="marke">fehlt</span></td><td class="z">15,3</td><td class="z">7,32</td><td class="z">2,05</td><td class="z">246,4</td><td class="notiz"></td></tr>
+<tr><td>S117</td><td>P37</td><td>B4</td><td class="z">8</td><td>10.09.2025</td><td>CS</td><td class="z">27,0</td><td class="z">14,5</td><td class="z">7,28</td><td class="z">2,19</td><td class="z">328,7</td><td class="notiz"></td></tr>
+<tr><td>S118</td><td>P38</td><td>B4</td><td class="z">16</td><td>10.09.2025</td><td>AK</td><td class="z">35,6</td><td class="z">13,1</td><td class="z">6,94</td><td class="z">2,09</td><td class="z">361,1</td><td class="notiz"></td></tr>
+<tr><td>S119</td><td>P39</td><td>B4</td><td class="z">2</td><td>10.09.2025</td><td>BM</td><td class="z">37,7</td><td class="z">14,9</td><td class="z">7,32</td><td class="z">1,89</td><td class="z">153,0</td><td class="notiz"></td></tr>
+<tr><td>S120</td><td>P40</td><td>B4</td><td class="z">8</td><td>10.09.2025</td><td>BM</td><td class="z">31,4</td><td class="z">13,2</td><td class="z">6,94</td><td class="z">1,91</td><td class="z">246,7</td><td class="notiz"></td></tr>
+</tbody>
+</table>
+</div>
+<p class="fuss">120 Proben · 8 fehlende Werte (NA) als „– fehlt“ markiert · Feldnotizen im Original (Englisch) ·
+Rohwerte ohne Korrektur · Ben Schmidt, 2026</p>
+</body>
+</html>

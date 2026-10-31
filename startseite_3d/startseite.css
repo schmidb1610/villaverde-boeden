@@ -1,0 +1,494 @@
+@font-face { font-family: "Geist"; src: url("schrift/geist-latin-wght-normal.woff2") format("woff2"); font-weight: 100 900; font-display: swap; }
+@font-face { font-family: "Geist Mono"; src: url("schrift/geist-mono-latin-wght-normal.woff2") format("woff2"); font-weight: 100 900; font-display: swap; }
+
+/* Startseite Villaverde – 3D-Gelände. Zwei Stile (body[data-stil]): „dunkel" (Start) und „relief" (erdig).
+   Bedienelemente als Milchglas über dem Gelände. Feinschliff folgt (Claude Design). */
+
+:root {
+  --text: #1d1d1f;
+  --text-2: #6e6e73;
+  --glas: rgba(255, 255, 255, 0.58);
+  --glas-rand: rgba(255, 255, 255, 0.7);
+  --glas-schatten: 0 8px 32px rgba(30, 25, 20, 0.10), 0 1px 2px rgba(30, 25, 20, 0.06);
+  --linie: rgba(60, 50, 40, 0.12);
+  --wasser: #7fb4d2;
+  --strasse: #ffffff;
+  --bahn: #9a958e;
+  --sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --halo: #fff;             /* Schein hinter Schrift auf dem Gelände */
+  --display: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+body[data-stil="relief"] { --wasser: #3f7896; --strasse: #f4efe6; --bahn: #4a4038; }
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0; height: 100%; overflow: hidden;
+  font-family: var(--sans); color: var(--text);
+  -webkit-font-smoothing: antialiased;
+}
+body { background: radial-gradient(ellipse at 50% 35%, #fbfbfa 0%, #eceae6 70%, #e3e0da 100%); }
+body[data-stil="relief"] { background: radial-gradient(ellipse at 50% 35%, #f3eee6 0%, #e6dfd3 75%, #dcd3c5 100%); }
+
+#szene { position: fixed; inset: 0; }
+#szene canvas { display: block; }
+
+/* Milchglas für alle schwebenden Elemente */
+.glas, #menue-knopf, #menue, #panel, #lizenzen {
+  background: var(--glas);
+  -webkit-backdrop-filter: blur(22px) saturate(180%);
+  backdrop-filter: blur(22px) saturate(180%);
+  border: 1px solid var(--glas-rand);
+  box-shadow: var(--glas-schatten);
+}
+
+.eyebrow {
+  margin: 0 0 6px; font-size: 11px; font-weight: 600; letter-spacing: .06em;
+  text-transform: uppercase; color: var(--text-2);
+}
+
+/* ---------- Titel ---------- */
+#titel { position: fixed; top: 22px; left: 84px; max-width: 520px; pointer-events: none; }
+#titel { line-height: 46px; }
+#titel .eyebrow { margin: 0; line-height: inherit; }
+#titel a { color: inherit; text-decoration: none; pointer-events: auto; }
+#titel a:hover { color: var(--text); }
+.nur-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+/* ---------- Hamburger ---------- */
+#menue-knopf {
+  position: fixed; top: 20px; left: 20px; z-index: 30; width: 46px; height: 46px; border-radius: 14px;
+  display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 5px;
+  cursor: pointer;
+}
+#menue-knopf span { display: block; width: 20px; height: 2px; background: var(--text); border-radius: 1px;
+  transition: transform .25s ease, opacity .2s; }
+#menue-knopf[aria-expanded="true"] span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+#menue-knopf[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+#menue-knopf[aria-expanded="true"] span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+#menue {
+  position: fixed; top: 12px; left: 12px; bottom: 12px; z-index: 20; width: 300px; padding: 84px 16px 20px;
+  border-radius: 20px; display: flex; flex-direction: column; gap: 2px;
+}
+#menue[hidden] { display: none; }
+#menue a { padding: 10px 12px; border-radius: 10px; color: var(--text); text-decoration: none; font-size: 15px; }
+#menue a:hover { background: rgba(0, 0, 0, .05); }
+#menue a[aria-current] { font-weight: 600; background: rgba(255, 255, 255, .6); }
+.menue-sprache { margin-top: auto; padding: 10px 12px; border: 0; border-radius: 10px; background: none; color: var(--text); font: inherit; font-size: 13px; text-align: left; cursor: pointer; }
+.menue-sprache:hover { background: rgba(0, 0, 0, .05); }
+#menue a[data-folgt]::after { content: " · folgt"; color: var(--text-2); font-size: 12px; }
+
+/* ---------- Ebenen ---------- */
+/* Liquid Glass wie die Bohrprofil-Nadeln: graublau getönt, Lichtkante oben, Tiefe unten; einklappbar */
+#ebenen { position: fixed; top: 20px; right: 20px; width: 228px; }
+#steuerung { position: fixed; left: 20px; bottom: 34px; width: 228px; }
+#ebenen, #steuerung {
+  padding: 10px 16px; border-radius: 20px; font-size: 13px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, .34), rgba(230, 236, 242, .42) 40%, rgba(214, 224, 234, .46));
+  -webkit-backdrop-filter: blur(20px) saturate(180%); backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, .7);
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, .9), inset 0 -2px 8px rgba(80, 100, 120, .18), 0 8px 28px rgba(20, 30, 40, .2);
+}
+.feld-knopf {
+  display: flex; align-items: center; justify-content: space-between; width: 100%; padding: 4px 0;
+  border: 0; background: none; font: inherit; font-size: 13px; font-weight: 600; color: var(--text); cursor: pointer;
+}
+.feld-knopf svg { width: 12px; height: 8px; fill: none; stroke: var(--text-2); stroke-width: 1.6; stroke-linecap: round;
+  stroke-linejoin: round; transition: transform .25s ease; }
+.feld-knopf[aria-expanded="false"] svg { transform: rotate(-90deg); }
+.feld-inhalt { display: grid; grid-template-rows: 1fr; transition: grid-template-rows .25s ease; }
+.feld-inhalt > .innen { min-height: 0; overflow: hidden; padding-top: 8px; }
+.zu .feld-inhalt { grid-template-rows: 0fr; }
+.zu .feld-inhalt > .innen { visibility: hidden; transition: visibility 0s .25s; }
+#ebenen label { display: flex; align-items: center; gap: 8px; padding: 3px 0; cursor: pointer; }
+#ebenen input[type=checkbox] { accent-color: var(--text); }
+#ebenen .regler { flex-wrap: wrap; margin-top: 8px; padding-top: 10px; border-top: 1px solid var(--linie); }
+#ebenen .regler input { width: 100%; accent-color: var(--text); }
+#ebenen output { margin-left: auto; font-variant-numeric: tabular-nums; }
+
+/* Steuerung links unten: zwei Pfeilkreuze, Zoom, Tempo */
+.pads { display: flex; justify-content: space-between; }
+.pad {
+  display: grid; grid-template: repeat(3, 28px) auto / repeat(3, 28px); gap: 2px; justify-items: center;
+  font-size: 11px; color: var(--text-2);
+}
+.pad span { grid-area: 4 / 1 / 5 / 4; margin-top: 4px; }
+.pad button {
+  width: 28px; height: 28px; padding: 0; border-radius: 9px; cursor: pointer; touch-action: none;
+  border: 1px solid var(--glas-rand); background: rgba(255, 255, 255, .1); color: var(--text);
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, .25);
+}
+.pad button:hover { background: rgba(255, 255, 255, .2); }
+.pad button:active { background: rgba(255, 255, 255, .34); }
+.pad button:focus-visible, .pult-regler input:focus-visible { outline: 2px solid #a9bdd0; outline-offset: 1px; }
+.pad button::before { content: ""; display: block; width: 7px; height: 7px; margin: 0 auto;
+  border-top: 1.6px solid currentColor; border-left: 1.6px solid currentColor; }
+.pad .o { grid-area: 1 / 2; } .pad .o::before { transform: translateY(2px) rotate(45deg); }
+.pad .l { grid-area: 2 / 1; } .pad .l::before { transform: translateX(2px) rotate(-45deg); }
+.pad .r { grid-area: 2 / 3; } .pad .r::before { transform: translateX(-2px) rotate(135deg); }
+.pad .u { grid-area: 3 / 2; } .pad .u::before { transform: translateY(-2px) rotate(225deg); }
+.pult-regler { display: flex; flex-wrap: wrap; align-items: center; margin-top: 8px; font-size: 12px; }
+.pult-regler output { margin-left: auto; font-variant-numeric: tabular-nums; }
+.pult-regler input { width: 100%; accent-color: var(--text); }
+
+/* Segmentschalter Dunkel / Relief */
+#stil {
+  display: grid; grid-template-columns: 1fr 1fr; margin-bottom: 12px; padding: 2px; border-radius: 9px;
+  background: rgba(120, 110, 100, .14);
+}
+#stil button {
+  border: 0; padding: 5px 0; border-radius: 7px; background: none; font: inherit; font-size: 12px;
+  font-weight: 500; color: var(--text); cursor: pointer;
+}
+#stil button[aria-pressed="true"] { background: #fff; font-weight: 600; box-shadow: 0 1px 3px rgba(0, 0, 0, .12); }
+
+/* Höhenlegende (nur Stil „relief"): Crameri oleron 8.0.1, Landteil, linear von hoehe.min bis hoehe.max */
+#hoehenlegende { margin: -2px 0 12px; }
+#hoehenlegende[hidden] { display: none; }
+#hoehenlegende .balken {
+  height: 8px; border-radius: 4px; border: 1px solid rgba(255, 255, 255, .7);
+  background: linear-gradient(90deg, #194c00 0%, #3e5600 11.8%, #606308 24.4%, #857729 37%, #a78e4e 49.6%,
+    #cca972 62.2%, #ebc79a 74.8%, #f7e2c0 87.4%, #fcfce5 100%);
+}
+#hoehenlegende .marken { position: relative; height: 14px; margin: 2px 0 0; font-size: 10px; color: var(--text-2);
+  font-variant-numeric: tabular-nums; }
+#hoehenlegende .marken span { position: absolute; top: 0; transform: translateX(-50%); white-space: nowrap; }
+#hoehenlegende .marken span:first-child { transform: none; }
+#hoehenlegende .marken span:last-child { transform: translateX(-100%); }
+
+.m { display: inline-block; width: 16px; height: 4px; border-radius: 2px; }
+.m.gewaesser { background: var(--wasser); }
+.m.strassen { background: var(--strasse); outline: 1px solid #c9c2b7; }
+.m.bahn { background: repeating-linear-gradient(90deg, var(--bahn) 0 4px, transparent 4px 6px); }
+.m.orte { width: 8px; height: 8px; border-radius: 50%; background: var(--text); }
+.m.profile { width: 8px; height: 8px; border-radius: 50%; background: #5c6e80; box-shadow: 0 0 0 1.5px rgba(214, 224, 234, .9); }
+
+/* ---------- Nordpfeil ---------- */
+#nordpfeil {
+  position: fixed; right: 20px; bottom: 60px; width: 44px; height: 56px; text-align: center;
+  font-size: 11px; font-weight: 700; color: var(--text); pointer-events: none;
+}
+#nordpfeil svg { width: 20px; height: 28px; fill: var(--text); }
+#nordpfeil span { display: block; }
+
+/* ---------- Weiter zur Übersicht (Gegenstück zum Pfeil im Einstieg) ---------- */
+#zur-uebersicht {
+  position: fixed; right: 20px; top: max(50%, 416px); width: 44px; height: 44px; margin-top: -22px;   /* bleibt unter dem offenen Feld Kartenansicht */
+  display: grid; place-items: center; border-radius: 50%; color: var(--text);
+  background: var(--glas); border: 1px solid var(--glas-rand); box-shadow: var(--glas-schatten);
+  -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
+}
+#zur-uebersicht:hover { background: var(--glas-rand); }
+#zur-uebersicht:focus-visible { outline: 2px solid #7fb4d2; outline-offset: 3px; }
+#zur-uebersicht svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; transition: transform .2s ease; }
+#zur-uebersicht:hover svg { transform: translateX(2px); }
+@media (max-height: 555px) { #zur-uebersicht { display: none; } }   /* kein Platz neben dem Nordpfeil; das Menü führt ebenso zur Übersicht */
+
+/* ---------- Maßstab (links neben dem Nordpfeil) ---------- */
+#massstab {
+  position: fixed; right: 76px; bottom: 66px; display: flex; flex-direction: column; align-items: flex-end;
+  gap: 3px; pointer-events: auto; font-size: 11px; font-weight: 600; color: var(--text);
+  text-shadow: 0 0 3px var(--halo), 0 0 3px var(--halo);
+}
+#massstab small { font-size: 9px; font-weight: 500; color: var(--text-2); }
+#massstab-balken {
+  display: flex; width: 100px; height: 6px; border: 1.5px solid var(--text); border-radius: 2px;
+  background: var(--halo); transition: width .15s ease;
+}
+#massstab-balken i { flex: 1; }
+#massstab-balken i:first-child { background: var(--text); }   /* halbe Länge dunkel, wie bei Kartenmaßstäben */
+
+/* ---------- Beschriftungen (HTML über dem Canvas) ---------- */
+#beschriftungen { position: fixed; inset: 0; pointer-events: none; overflow: hidden; }
+.ort {
+  position: absolute; transform: translate(-50%, -100%); white-space: nowrap;
+  font-size: 12px; font-weight: 600; color: var(--text);
+  text-shadow: 0 0 4px var(--halo), 0 0 4px var(--halo), 0 0 2px var(--halo);
+}
+.ort.town { font-size: 14px; font-weight: 700; }
+.ort.hamlet { font-size: 11px; font-weight: 500; color: var(--text-2); }
+
+/* ---------- Bohrprofile: Glas-Nadel (Claude Design „2a", Maße und Farben aus dem Handoff) ---------- */
+.nadel {
+  position: absolute; display: flex; flex-direction: column; align-items: center; padding: 6px 6px 0;
+  transform: translate(-50%, -100%); transform-origin: 50% 100%; cursor: pointer; pointer-events: auto;
+  font-family: "Geist", var(--sans);
+}
+.nadel:hover, .nadel.gewaehlt { z-index: 5000 !important; }   /* vor die Nachbarn, auch vor die Abstandsreihenfolge */
+.nadel-kopf { position: relative; display: flex; align-items: center; justify-content: center; }
+.perle {
+  width: 13px; height: 13px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  background: rgba(214, 224, 234, .38);
+  -webkit-backdrop-filter: blur(8px) saturate(170%); backdrop-filter: blur(8px) saturate(170%);
+  border: 1px solid rgba(255, 255, 255, .75);
+  box-shadow: inset 0 1.5px 1px rgba(255, 255, 255, .95), inset 0 -3px 5px rgba(70, 90, 112, .35), 0 3px 8px rgba(20, 30, 40, .28);
+  transition: width .18s, height .18s;
+}
+.perle i { width: 5px; height: 5px; border-radius: 50%; background: #5c6e80; box-shadow: 0 0 0 1.5px rgba(255, 255, 255, .7); }
+.stab {
+  width: 2px; height: 30px; background: linear-gradient(rgba(255, 255, 255, .95), rgba(220, 230, 240, .25));
+  box-shadow: 0 0 2px rgba(20, 30, 40, .25); transition: height .18s;
+}
+.ring {
+  width: 14px; height: 5px; margin-top: -2.5px; border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, .85); background: rgba(120, 140, 162, .4);
+  -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px); box-shadow: 0 1px 3px rgba(20, 30, 40, .3);
+}
+.nadel:hover .perle, .nadel.gewaehlt .perle { width: 18px; height: 18px; }
+.nadel:hover .stab, .nadel.gewaehlt .stab { height: 36px; }
+
+/* Hover: Glas-Pille rechts vom Kopf */
+.pille {
+  position: absolute; left: calc(100% + 8px); top: 50%; transform: translateY(-50%); display: none;
+  flex-direction: column; gap: 3px; white-space: nowrap; padding: 6px 12px 6px 8px; border-radius: 999px;
+  background: rgba(230, 236, 242, .42);
+  -webkit-backdrop-filter: blur(14px) saturate(180%); backdrop-filter: blur(14px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, .7);
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, .9), inset 0 -2px 6px rgba(80, 100, 120, .18), 0 6px 18px rgba(20, 30, 40, .22);
+}
+.nadel:hover .pille, .nadel.gewaehlt .pille { display: flex; }
+.pille .zeile { display: flex; align-items: center; gap: 8px; }
+.pille b {
+  font-family: "Geist Mono", ui-monospace, monospace; font-size: 11px; font-weight: 500; color: #fff;
+  background: rgba(72, 88, 106, .82); padding: 2px 7px; border-radius: 999px;
+}
+.pille span { font-size: 13px; font-weight: 600; color: #1e2a36; }
+.pille small { display: none; font-family: "Geist Mono", ui-monospace, monospace; font-size: 11px; color: #2e3b48; }
+
+/* Ausgewählt: dunklerer Kopf mit weißem Kern, größerer Bodenring, Pille wird zur Karte mit zweiter Zeile */
+.nadel.gewaehlt .perle {
+  background: rgba(92, 110, 128, .55); border-color: rgba(255, 255, 255, .85);
+  box-shadow: inset 0 1.5px 1px rgba(255, 255, 255, .8), 0 0 0 5px rgba(220, 230, 240, .3), 0 3px 8px rgba(20, 30, 40, .28);
+}
+.nadel.gewaehlt .perle i { background: #fff; box-shadow: none; }
+.nadel.gewaehlt .ring { width: 17px; height: 6px; margin-top: -3px; background: rgba(92, 110, 128, .5); border-color: rgba(255, 255, 255, .9); }
+.nadel.gewaehlt .pille {
+  left: calc(100% + 10px); padding: 8px 12px; border-radius: 14px; background: rgba(230, 236, 242, .5);
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, .9), 0 6px 18px rgba(20, 30, 40, .22);
+}
+.nadel.gewaehlt .pille .zeile { gap: 6px; }
+.nadel.gewaehlt .pille small { display: block; }
+
+/* ---------- Panel (Profil): Entwurf Claude Design 1a, 304 px breit, Knopf bleibt unten ---------- */
+#panel {
+  position: fixed; top: 84px; left: 20px; z-index: 10; width: 304px; max-height: calc(100vh - 196px);   /* endet über der Steuerung */
+  display: flex; flex-direction: column; overflow: hidden; border-radius: 20px; font-size: 13px; line-height: 1.45;
+}
+#panel[hidden] { display: none; }
+body:has(#steuerung:not(.zu)) #panel { max-height: max(240px, calc(100vh - 390px)); }
+/* Aufgeklappt stehen die Kernwerte in der Liste, oben wären sie doppelt */
+.panel-rolle:has(#panel-mehr[aria-expanded="true"]) .kernwerte { display: none; }
+#panel-inhalt { display: flex; flex-direction: column; min-height: 0; }
+.panel-rolle { flex: 1 1 auto; min-height: 0; overflow-y: auto; padding: 16px 18px 0; }
+#panel .eyebrow { display: flex; align-items: center; gap: 8px; margin: 0 0 4px; }
+.profil-marke {
+  font: 500 11px "Geist Mono", ui-monospace, monospace; letter-spacing: 0; color: #fff;
+  background: rgba(72, 88, 106, .82); padding: 2px 7px; border-radius: 999px;
+}
+#panel h2 { margin: 0; font-family: var(--display); font-size: 22px; line-height: 1.15; font-weight: 600; letter-spacing: -.01em; }
+#panel .hoehe { display: flex; align-items: center; gap: 6px; margin: 4px 0 0; color: var(--text-2); font-variant-numeric: tabular-nums; }
+#panel .klein { color: var(--text-2); font-size: 11.5px; }
+.marke {
+  display: inline-grid; place-items: center; min-width: 15px; height: 15px; padding: 0 3px; border-radius: 4px;
+  border: 1px solid var(--text-2); font-size: 9.5px; font-weight: 700; font-style: normal; line-height: 1;
+}
+.marke[data-art="abgeleitet"], .marke[data-art="Index"] { border-style: dashed; }
+.oberboden { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--linie); }
+.oberboden .eyebrow { margin: 0 !important; }
+.oberboden .klein { display: inline-flex; align-items: center; gap: 5px; }
+.kernwerte { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-top: 8px; }
+.kernwerte span { display: block; font-size: 11.5px; color: var(--text-2); }
+.kernwerte b { font-family: var(--display); font-size: 21px; font-weight: 600; letter-spacing: -.01em; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.kernwerte small { margin-left: 3px; font-size: 12px; font-weight: 500; color: var(--text-2); }
+#panel-mehr {
+  display: flex; align-items: center; justify-content: space-between; width: 100%; margin-top: 14px; padding: 9px 0;
+  border: 0; border-top: 1px solid var(--linie); border-bottom: 1px solid var(--linie); background: none;
+  font: inherit; font-weight: 500; color: var(--text); cursor: pointer;
+}
+#panel-mehr svg { width: 12px; height: 8px; fill: none; stroke: var(--text-2); stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; transition: transform .2s ease; }
+#panel-mehr[aria-expanded="true"] svg { transform: rotate(180deg); }
+#panel-alle[hidden] { display: none; }
+#panel-alle .gruppe { display: flex; align-items: center; gap: 6px; margin: 10px 0 1px; font-size: 11.5px; color: var(--text-2); }
+#panel-alle table { width: 100%; border-collapse: collapse; }
+#panel-alle td { padding: 3px 0; border-bottom: 1px solid var(--linie); }
+#panel-alle td.wert { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; padding-left: 12px; }
+#panel-alle dl { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 4px 12px; margin: 10px 0 0; font-size: 12px; }
+#panel-alle dt { color: var(--text-2); }
+#panel-alle dd { margin: 0; text-align: right; font-variant-numeric: tabular-nums; }
+#panel-alle .klein { margin: 12px 0 0; line-height: 1.45; }
+#panel-zu {
+  position: absolute; top: 12px; right: 12px; z-index: 1; width: 28px; height: 28px; border: 0; border-radius: 50%;
+  background: rgba(120, 110, 100, .14); font-size: 17px; line-height: 1; cursor: pointer; color: var(--text-2);
+}
+#panel-mehr:focus-visible, #panel-zu:focus-visible, .knopf-voll:focus-visible { outline: 2px solid #7fb4d2; outline-offset: 2px; }
+.knopf-voll {
+  flex: none; display: flex; flex-direction: column; align-items: center; gap: 1px; margin: 12px 18px 16px; padding: 9px 14px;
+  border-radius: 12px; text-align: center; background: var(--text); color: #fff; text-decoration: none;
+}
+.knopf-voll b { font-size: 14px; font-weight: 600; }
+.knopf-voll span { font-size: 11.5px; opacity: .72; }
+.knopf-voll:hover { background: #3a3a3c; }
+
+/* ---------- Kartenfuß (Pflicht-Namensnennung) ---------- */
+#fuss {
+  position: fixed; left: 20px; right: 20px; bottom: 10px; display: flex; flex-wrap: wrap; align-items: center;
+  gap: 2px 16px; font-size: 11px; color: var(--text-2); text-shadow: 0 0 3px var(--halo);
+}
+#fuss a { color: inherit; }
+#fuss .hinweis { margin-right: auto; }
+#lizenzen-knopf {
+  border: 0; padding: 0; background: none; font: inherit; color: var(--text); cursor: pointer;
+  text-decoration: underline; text-underline-offset: 2px; text-shadow: inherit;
+}
+#lizenzen {
+  position: fixed; right: 20px; bottom: 36px; z-index: 15; width: min(420px, calc(100vw - 24px));
+  max-height: calc(100vh - 120px); overflow-y: auto; padding: 16px 18px; border-radius: 16px;
+  font-size: 12px; line-height: 1.5; color: var(--text);
+}
+#lizenzen[hidden], #lizenzen [hidden] { display: none; }
+#lizenzen ul { margin: 0 0 10px; padding: 0; list-style: none; }
+#lizenzen li { padding: 3px 0; }
+#lizenzen a { color: inherit; }
+.lizenzen-mehr { font-weight: 600; }
+
+#laden {
+  position: fixed; inset: 0; display: grid; place-items: center; font-size: 14px; color: var(--text-2);
+  background: #eceae6; z-index: 40;
+}
+#laden[hidden] { display: none; }
+
+/* ---------- Stil „dunkel" ---------- */
+body[data-stil="dunkel"] {
+  --text: #f2f2f4; --text-2: #a3a8ae; --halo: #15181c;
+  --glas: rgba(28, 32, 38, .58); --glas-rand: rgba(255, 255, 255, .12);
+  --glas-schatten: 0 8px 32px rgba(0, 0, 0, .35), 0 1px 2px rgba(0, 0, 0, .3);
+  --linie: rgba(255, 255, 255, .12);
+  --wasser: #4f8db0; --strasse: #8a929c; --bahn: #9aa1a9;
+  background: radial-gradient(ellipse at 50% 35%, #2c3138 0%, #1b1e23 70%, #121417 100%);
+}
+body[data-stil="dunkel"] :is(#ebenen, #steuerung) {
+  background: linear-gradient(180deg, rgba(255, 255, 255, .10), rgba(44, 52, 62, .5) 40%, rgba(30, 36, 44, .55));
+  border-color: rgba(255, 255, 255, .16);
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, .22), inset 0 -2px 8px rgba(0, 0, 0, .25), 0 8px 28px rgba(0, 0, 0, .4);
+}
+body[data-stil="dunkel"] #stil { background: rgba(255, 255, 255, .08); }
+body[data-stil="dunkel"] #stil button[aria-pressed="true"] { background: rgba(255, 255, 255, .2); box-shadow: none; }
+body[data-stil="dunkel"] :is(#menue a, .menue-sprache):hover { background: rgba(255, 255, 255, .06); }
+body[data-stil="dunkel"] #menue a[aria-current] { background: rgba(255, 255, 255, .12); }
+body[data-stil="dunkel"] .knopf-voll { color: #1d1d1f; }
+body[data-stil="dunkel"] .knopf-voll:hover { background: #d8d8dc; }
+
+body[data-stil="dunkel"] #laden { background: #121417; }
+
+/* ---------- Einstieg (intro.js): Überschrift als Punktfeld, dann Einflug ins Gelände ---------- */
+#intro {
+  position: fixed; inset: 0; z-index: 50; overflow: hidden; touch-action: none;
+  background: radial-gradient(ellipse at 50% 35%, #1b1e23 0%, #121417 70%, #0c0e11 100%);
+  transition: opacity .9s ease .35s; will-change: opacity;
+}
+html.ohne-intro #intro { display: none; }
+#intro canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.intro-zeile {
+  position: absolute; left: 0; right: 0; top: clamp(28px, 7vh, 72px); margin: 0; text-align: center;
+  font-family: "Geist Mono", ui-monospace, monospace; font-size: 11px; font-weight: 500;
+  letter-spacing: .18em; text-transform: uppercase; color: #a3a8ae; pointer-events: none;
+}
+#intro-thema {
+  position: absolute; top: 20px; right: 20px; z-index: 1; display: grid; place-items: center; width: 40px; height: 40px; padding: 0;
+  border-radius: 12px; cursor: pointer; color: #f2f2f4; background: rgba(255, 255, 255, .06); border: 1px solid rgba(255, 255, 255, .16);
+}
+#intro-sprache {
+  position: absolute; top: 20px; right: 68px; z-index: 1; width: 40px; height: 40px; padding: 0; font-family: inherit; font-size: 13px; font-weight: 600;
+  border-radius: 12px; cursor: pointer; color: #f2f2f4; background: rgba(255, 255, 255, .06); border: 1px solid rgba(255, 255, 255, .16);
+}
+:is(#intro-thema, #intro-sprache):hover { background: rgba(255, 255, 255, .12); }
+#intro-sprache:focus-visible, #intro-thema:focus-visible { outline: 2px solid #a9bdd0; outline-offset: 3px; }
+#intro-thema svg { width: 18px; height: 18px; fill: currentColor; }
+#intro-thema .sonne { fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; }
+#intro-thema .mond, #intro.hell #intro-thema .sonne { display: none; }
+#intro.hell #intro-thema .mond { display: block; }
+#intro.hell { background: radial-gradient(ellipse at 50% 35%, #ffffff 0%, #f3eee6 70%, #e6dfd3 100%); }
+#intro.hell .intro-zeile { color: #6e6e73; }
+#intro.hell :is(#intro-thema, #intro-sprache, #intro-weiter) { color: #1d1d1f; background: rgba(255, 255, 255, .7); border-color: rgba(0, 0, 0, .1); box-shadow: 0 2px 8px rgba(0, 0, 0, .06); }
+#intro.hell.geht .intro-zeile { opacity: 0; }
+#intro.geht :is(#intro-thema, #intro-sprache) { display: none; }
+#intro-weiter {
+  position: absolute; left: 50%; bottom: clamp(28px, 7vh, 64px); width: 48px; height: 48px; margin-left: -24px;
+  display: grid; place-items: center; padding: 0; border-radius: 50%; cursor: pointer; color: #f2f2f4;
+  background: rgba(255, 255, 255, .06); border: 1px solid rgba(255, 255, 255, .16);
+  -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, .2);
+  animation: intro-wippen 2.2s ease-in-out infinite;
+}
+#intro-weiter:hover { background: rgba(255, 255, 255, .12); }
+#intro-weiter:focus-visible { outline: 2px solid #a9bdd0; outline-offset: 3px; }
+#intro-weiter svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+#intro.wartet:not(.bereit) #intro-weiter { opacity: .5; animation: none; }   /* Gelände lädt noch */
+@keyframes intro-wippen { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(7px); } }
+
+/* Abgang: Grund wird durchsichtig, die Punkte sinken ins Gelände */
+#intro.geht { opacity: 0; pointer-events: none; }
+#intro.geht .intro-zeile { opacity: 0; transition: opacity .3s ease; }
+#intro.geht #intro-weiter { display: none; }     /* Weichzeichner nicht über dem bewegten Gelände rechnen */
+.intro-schicht { will-change: transform, opacity; transition: transform .7s cubic-bezier(.55, 0, .85, .45) calc(var(--i) * 90ms), opacity .7s ease calc(var(--i) * 90ms); }
+#intro.geht .intro-schicht { transform: translateY(45vh); opacity: 0; }
+/* Bedienelemente und Nadeln erst nach der Landung: kein Glas über dem bewegten Gelände während des Flugs */
+body:not(.intro-vorbei) :is(#menue-knopf, #titel, #ebenen, #steuerung, #massstab, #nordpfeil, #zur-uebersicht, #fuss, #laden),
+body:not(.nadeln) #beschriftungen {
+  opacity: 0; visibility: hidden;
+}
+:is(#titel, #ebenen, #steuerung, #massstab, #nordpfeil, #fuss) { transition: opacity .6s ease; }
+#zur-uebersicht { transition: opacity .6s ease, background .2s ease; }
+/* Nadel fällt von oben auf ihren Bohrpunkt und federt kurz nach; translate, weil transform je Bild aus startseite.js kommt */
+.nadel.erscheint { animation: nadel-fallen .8s both; }
+@keyframes nadel-fallen {
+  0% { opacity: 0; translate: 0 -220px; animation-timing-function: cubic-bezier(.5, 0, .9, .55); }
+  25% { opacity: 1; }
+  72% { translate: 0 0; animation-timing-function: ease-out; }
+  86% { translate: 0 -7px; animation-timing-function: ease-in; }
+  100% { opacity: 1; translate: 0 0; }
+}
+#menue-knopf { transition: opacity .6s ease, transform .25s ease; }
+@media (prefers-reduced-motion: reduce) {
+  #intro-weiter { animation: none; }
+  :is(#menue-knopf, #titel, #ebenen, #steuerung, #massstab, #nordpfeil, #zur-uebersicht, #fuss, #intro) { transition-duration: .3s; transition-delay: 0s; }
+}
+
+/* ---------- Tour (#tour, eingebettet in die Ansicht Hintergrund) ---------- */
+html.tour :is(#menue-knopf, #titel, #ebenen, #steuerung, #massstab, #nordpfeil, #zur-uebersicht, #fuss, #panel, #laden) { display: none !important; }
+html.tour .nadel { pointer-events: none; }
+.tour-ohne-nadeln .nadel { display: none !important; }
+.tour-marke {
+  position: absolute; transform: translate(-50%, -100%); white-space: nowrap; padding: 4px 10px; border-radius: 999px;
+  font-size: 12px; font-weight: 600; color: #f2f2f4; background: rgba(28, 32, 38, .62);
+  border: 1px solid rgba(255, 255, 255, .16); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
+  animation: tour-marke .4s ease .9s both;
+}
+body[data-stil="relief"] .tour-marke { color: #1d1d1f; background: rgba(255, 255, 255, .78); border-color: rgba(0, 0, 0, .08); }
+.tour-marke.punkt { margin-top: -12px; }
+.tour-marke.punkt::after {
+  content: ""; position: absolute; left: 50%; top: calc(100% + 5px); width: 8px; height: 8px; margin-left: -4px; border-radius: 50%;
+  background: #4a6178; box-shadow: 0 0 0 2px rgba(255, 255, 255, .8);
+}
+.tour-marke.pfeil::after { content: " →"; color: currentColor; }
+@keyframes tour-marke { from { opacity: 0; } to { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .tour-marke { animation: none; } }
+
+/* Unter dieser Breite wird der Fuß zweizeilig: Steuerung darüber halten */
+@media (max-width: 1100px) { #steuerung { bottom: 50px; } }
+
+@media (max-width: 700px) {
+  #titel { left: 78px; right: 16px; top: 20px; }
+  #fuss { left: 12px; right: 12px; }
+  #fuss .hinweis, #steuerung { display: none; }
+  #ebenen { top: auto; bottom: 96px; right: 12px; left: 12px; width: auto; }
+  #ebenen .innen { display: grid; grid-template-columns: 1fr 1fr; gap: 0 12px; }
+  #ebenen .eyebrow, #ebenen .regler, #stil, #hoehenlegende { grid-column: 1 / -1; }
+  #nordpfeil { bottom: auto; top: 90px; right: 16px; }
+  #massstab { bottom: auto; top: 154px; right: 16px; }
+  #zur-uebersicht { display: grid; top: 200px; right: 12px; margin-top: 0; }
+  body:has(#ebenen:not(.zu)) #zur-uebersicht { display: none; }
+  /* Blatt über dem Fuß */
+  #panel, body:has(#steuerung:not(.zu)) #panel { top: auto; bottom: 44px; left: 12px; right: 12px; width: auto; max-height: 62vh; }
+}

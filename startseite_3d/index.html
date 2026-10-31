@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mesa Redonda 3D</title>
+  <!-- Geist für Einstieg und Bohrprofil-Nadeln (Entwurf Claude Design) -->
+  <link rel="stylesheet" href="startseite.css">
+  <script>
+    // Einstieg überspringen, wenn man von der Daten-Website zurückkommt (#gelaende) oder ?blick= nutzt;
+    // #tour: nur das Gelände, eingebettet in die Ansicht Hintergrund der Daten-Website
+    if (location.hash === "#gelaende" || location.hash === "#tour" || location.search.includes("blick=")) document.documentElement.classList.add("ohne-intro");
+    if (location.hash === "#tour") document.documentElement.classList.add("tour");
+  </script>
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.186.1/build/three.module.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.186.1/examples/jsm/"
+    }
+  }
+  </script>
+</head>
+<body data-stil="dunkel">
+  <!-- Einstieg: Überschrift als Punktfeld, nach unten geht es ins Gelände (intro.js) -->
+  <section id="intro" data-t-aria="intro.label" aria-label="Böden rund um die Mesa Redonda">
+    <canvas aria-hidden="true"></canvas>
+    <button id="intro-sprache" type="button" data-sprachwahl data-t="sprache.andere" data-t-aria="sprache.label" aria-label="Switch to English">EN</button>
+    <button id="intro-thema" type="button" aria-pressed="true" data-t-aria="thema" aria-label="Dunkler Modus">
+      <svg class="mond" viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 10.2A5.8 5.8 0 0 1 5.8 2.5a5.8 5.8 0 1 0 7.7 7.7Z"/></svg>
+      <svg class="sonne" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="3"/><path d="M8 1v1.6M8 13.4V15M1 8h1.6M13.4 8H15M3 3l1.1 1.1M11.9 11.9 13 13M3 13l1.1-1.1M11.9 4.1 13 3"/></svg>
+    </button>
+    <p class="intro-zeile" data-t="ort">Mesa Redonda · Villaverde del Río (Sevilla)</p>
+    <button id="intro-weiter" type="button" data-t-aria="weiter" aria-label="Weiter zum 3D-Gelände">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9.5 12 15.5 18 9.5"/></svg>
+    </button>
+  </section>
+
+  <div id="szene" data-t-aria="szene" aria-label="3D-Modell des Untersuchungsgebiets"></div>
+  <div id="beschriftungen" aria-hidden="true"></div>
+
+  <!-- Navigation (Hamburger oben links) -->
+  <button id="menue-knopf" data-t-aria="menue.label" aria-label="Menü öffnen" aria-expanded="false" aria-controls="menue">
+    <span></span><span></span><span></span>
+  </button>
+  <nav id="menue" hidden>
+    <p class="eyebrow" data-t="menue.eyebrow">Villaverde del Río · Bodendaten</p>
+    <a href="index.html" aria-current="page" data-t="nav.gelaende">3D-Gelände</a>
+    <!-- Ansichten der Daten-Website (../website/, Hash-Navigation) -->
+    <a href="../website/index.html#start" data-t="nav.start">Übersicht</a>
+    <a href="../website/index.html#hintergrund" data-t="nav.hintergrund">Hintergrund</a>
+    <a href="../website/index.html#karte" data-t="nav.karte">Karte</a>
+    <a href="../website/index.html#tabelle" data-t="nav.tabelle">Tabelle</a>
+    <a href="../website/index.html#graphen" data-t="nav.graphen">Graphen</a>
+    <a href="../website/index.html#info" data-t="nav.info">Methoden und Quellen</a>
+    <button type="button" class="menue-sprache" data-sprachwahl data-t="sprache.name" data-t-aria="sprache.label">English</button>
+  </nav>
+
+  <header id="titel">
+    <p class="eyebrow"><a href="index.html" data-t="ort" data-t-title="zurueck.einstieg" title="Zurück zum Einstieg">Mesa Redonda · Villaverde del Río (Sevilla)</a></p>
+    <h1 class="nur-sr" data-t="intro.label">Böden rund um die Mesa Redonda</h1>
+  </header>
+
+  <aside id="ebenen" class="zu" data-t-aria="ansicht" aria-label="Kartenansicht">
+    <button id="ebenen-knopf" class="feld-knopf" type="button" aria-expanded="false" aria-controls="ebenen-inhalt">
+      <span data-t="ansicht">Kartenansicht</span>
+      <svg viewBox="0 0 12 8" aria-hidden="true"><path d="M1 1.5 6 6.5 11 1.5"/></svg>
+    </button>
+    <div id="ebenen-inhalt" class="feld-inhalt"><div class="innen">
+    <div id="stil" role="group" data-t-aria="stil" aria-label="Kartenstil">
+      <button type="button" data-stil="dunkel" aria-pressed="true" data-t="stil.dunkel">Dunkel</button>
+      <button type="button" data-stil="relief" aria-pressed="false" data-t="stil.relief">Relief</button>
+    </div>
+    <div id="hoehenlegende" hidden data-t-title="hoehe.schatten" title="Im Bild zusätzlich schattiert (Licht aus Nordwesten)">
+      <p class="eyebrow" data-t="hoehe.legende">Höhe ü. M.</p>
+      <div class="balken"></div>
+      <div class="marken"></div>
+    </div>
+    <p class="eyebrow" data-t="ebenen">Ebenen</p>
+    <label><input type="checkbox" data-ebene="gewaesser"> <i class="m gewaesser"></i><span data-t="e.gewaesser">Gewässer</span></label>
+    <label><input type="checkbox" data-ebene="strassen"> <i class="m strassen"></i><span data-t="e.strassen">Straßen</span></label>
+    <label><input type="checkbox" data-ebene="bahn"> <i class="m bahn"></i><span data-t="e.bahn">Bahn</span></label>
+    <label><input type="checkbox" data-ebene="orte"> <i class="m orte"></i><span data-t="e.orte">Orte</span></label>
+    <label><input type="checkbox" data-ebene="profile" checked> <i class="m profile"></i><span data-t="e.profile">Bodenprofile (33)</span></label>
+    <label class="regler"><span data-t="ueberhoehung">Überhöhung</span> <output id="ueberhoehung-wert">3×</output>
+      <input id="ueberhoehung" type="range" min="1" max="6" step="0.5" value="3">
+    </label>
+    </div></div>
+  </aside>
+
+  <!-- Steuerung per Knopf statt Maus; Tempo gilt auch für Maus und Trackpad -->
+  <aside id="steuerung" class="zu" data-t-aria="steuerung" aria-label="Steuerung">
+    <button id="steuerung-knopf" class="feld-knopf" type="button" aria-expanded="false" aria-controls="steuerung-inhalt">
+      <span data-t="steuerung">Steuerung</span>
+      <svg viewBox="0 0 12 8" aria-hidden="true"><path d="M1 1.5 6 6.5 11 1.5"/></svg>
+    </button>
+    <div id="steuerung-inhalt" class="feld-inhalt"><div class="innen">
+      <div class="pads">
+        <div class="pad" role="group" data-t-aria="verschieben" aria-label="Verschieben">
+          <button type="button" class="o" data-art="schieb" data-x="0" data-y="1" data-t-aria="s.vorn" aria-label="Nach vorn verschieben"></button>
+          <button type="button" class="l" data-art="schieb" data-x="-1" data-y="0" data-t-aria="s.links" aria-label="Nach links verschieben"></button>
+          <button type="button" class="r" data-art="schieb" data-x="1" data-y="0" data-t-aria="s.rechts" aria-label="Nach rechts verschieben"></button>
+          <button type="button" class="u" data-art="schieb" data-x="0" data-y="-1" data-t-aria="s.hinten" aria-label="Nach hinten verschieben"></button>
+          <span data-t="verschieben">Verschieben</span>
+        </div>
+        <div class="pad" role="group" data-t-aria="drehen.label" aria-label="Drehen und neigen">
+          <button type="button" class="o" data-art="dreh" data-x="0" data-y="1" data-t-aria="d.steiler" aria-label="Steiler von oben ansehen"></button>
+          <button type="button" class="l" data-art="dreh" data-x="-1" data-y="0" data-t-aria="d.links" aria-label="Nach links drehen"></button>
+          <button type="button" class="r" data-art="dreh" data-x="1" data-y="0" data-t-aria="d.rechts" aria-label="Nach rechts drehen"></button>
+          <button type="button" class="u" data-art="dreh" data-x="0" data-y="-1" data-t-aria="d.flacher" aria-label="Flacher ansehen"></button>
+          <span data-t="drehen">Drehen</span>
+        </div>
+      </div>
+      <label class="pult-regler"><span data-t="zoom">Zoom</span> <input id="zoom" type="range" min="0" max="1" step="0.001" value="0.5"></label>
+      <label class="pult-regler"><span data-t="tempo">Tempo</span> <output id="tempo-wert">1×</output>
+        <input id="tempo" type="range" min="0.25" max="3" step="0.25" value="1">
+      </label>
+    </div></div>
+  </aside>
+
+  <div id="massstab" data-t-title="massstab.title" title="Maßstab in der Bildmitte – in der Schrägansicht ist vorne größer als hinten">
+    <span id="massstab-text">1 km</span>
+    <div id="massstab-balken"><i></i><i></i></div>
+    <small data-t="massstab.klein">in Bildmitte</small>
+  </div>
+  <div id="nordpfeil" data-t-title="norden" title="Norden"><span>N</span><svg viewBox="0 0 20 28"><path d="M10 0 L18 26 L10 20 L2 26 Z"/></svg></div>
+
+  <a id="zur-uebersicht" href="../website/index.html#start" data-t-aria="zur.uebersicht" aria-label="Weiter zur Übersicht" data-t-title="zur.uebersicht.kurz" title="Zur Übersicht">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>
+  </a>
+
+  <aside id="panel" hidden>
+    <button id="panel-zu" data-t-aria="schliessen" aria-label="Schließen">×</button>
+    <div id="panel-inhalt"></div>
+  </aside>
+
+  <!-- Die IGN-Nennung muss laut Lizenz sichtbar am Kartenfuß stehen (quellen_lizenzen.md, D3), OSM ebenso; Rest unter „Lizenzen" -->
+  <footer id="fuss">
+    <span class="hinweis" data-t="hinweis">Ziehen: drehen · Rechtsklick/zwei Finger: verschieben · Scrollen: zoomen · Bodenprofil anklicken</span>
+    <span id="fuss-ueberhoehung">Überhöhung 3×</span>
+    <span><a href="http://www.scne.es" target="_blank" rel="noopener">Obra derivada de MDT02-cob2 2015-2021 CC-BY 4.0 scne.es</a></span>
+    <span><a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">© OpenStreetMap</a></span>
+    <button id="lizenzen-knopf" type="button" aria-expanded="false" aria-controls="lizenzen" data-t="lizenzen">Lizenzen</button>
+  </footer>
+
+  <aside id="lizenzen" data-t-aria="lizenzen.titel" aria-label="Lizenzen und Quellen" hidden>
+    <p class="eyebrow" data-t="lizenzen.titel">Lizenzen und Quellen</p>
+    <ul>
+      <li><span data-t="l.gelaende">Gelände:</span> <a href="http://www.scne.es" target="_blank" rel="noopener">Obra derivada de MDT02-cob2 2015-2021 CC-BY 4.0 scne.es</a></li>
+      <li><span data-t="l.karte">Karte:</span> <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener" data-t="l.osm">© OpenStreetMap-Mitwirkende</a> (ODbL)</li>
+      <li><span data-t="l.boden">Bodendaten:</span> <a href="https://doi.org/10.57754/FDAT.cmgnm-1ra17" target="_blank" rel="noopener">Rentschler, Rau &amp; Scholten (2024)</a>, CC BY 4.0</li>
+      <li data-t="l.schrift">Schrift: Geist (SIL OFL 1.1)</li>
+    </ul>
+    <a class="lizenzen-mehr" href="../website/index.html#info" data-t="l.mehr">Alle Quellen und Methoden</a>
+  </aside>
+
+  <div id="laden" data-t="laden">Gelände wird geladen …</div>
+
+  <script type="module" src="texte.js"></script>
+  <script type="module" src="startseite.js"></script>
+</body>
+</html>

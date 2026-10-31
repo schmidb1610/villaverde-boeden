@@ -1,0 +1,47 @@
+{
+ "ausschnitt": {
+  "xmin": 237000.0,
+  "ymin": 4159000.0,
+  "xmax": 252000.0,
+  "ymax": 4175000.0,
+  "epsg": 25830
+ },
+ "hoehe": {
+  "datei": "hoehe_20m.u16",
+  "breite": 750,
+  "hoehe": 800,
+  "zelle_m": 20,
+  "faktor": 0.1,
+  "min": 6.8083648681640625,
+  "max": 408.4923095703125,
+  "aufbau": "Uint16 little-endian, Dezimeter, Zeile 0 = Norden"
+ },
+ "textur": {
+  "datei": "textur_8m.jpg",
+  "zelle_m": 8,
+  "farbe": "Crameri oleron (Landteil) × Schummerung 315°/45°"
+ },
+ "textur_hell": {
+  "datei": "textur_hell_8m.jpg",
+  "zelle_m": 8,
+  "farbe": "helles Grau nach Höhe × Schummerung 315°/45° (abgeschwächt)"
+ },
+ "kacheln": {
+  "x": 4,
+  "y": 4,
+  "ordner": "kacheln/",
+  "gitter_m": 10,
+  "punkte": [
+   376,
+   401
+  ],
+  "textur_m": 2,
+  "aufbau": "k<i>_<j>, i nach Osten, j nach Norden ab 0; _hoehe.u16 wie oben, Zeile 0 = Norden"
+ },
+ "namensnennung": [
+  "Obra derivada de MDT02-cob2 2015-2021 CC-BY 4.0 scne.es",
+  "© OpenStreetMap-Mitwirkende (ODbL)"
+ ],
+ "erzeugt": "2026-10-30",
+ "skript": "villaverde/skripte/baue_startseite_daten.py"
+}
